@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Pokédex</h1>
+        <div class="header-controls">
+          <div class="search-container">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search Pokémon..."
+            />
+            <button id="search-button">Search</button>
+          </div>
+          <button id="theme-toggle" aria-label="Toggle theme">
+            <span class="theme-icon">☀️</span>
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <div class="pokemon-grid" id="pokemon-grid">
+          <!-- Pokemon cards will be generated here -->
+        </div>
+
+        <div class="pokemon-detail" id="pokemon-detail">
+          <!-- Pokemon details will be shown here when a card is clicked -->
+        </div>
+      </main>
+
+      <footer>
+        <p>
+          Data from <a href="https://pokeapi.co/" target="_blank">PokeAPI</a>
+        </p>
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
