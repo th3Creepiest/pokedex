@@ -135,12 +135,6 @@ async function showPokemonDetail(pokemon) {
     pokemon.sprites.versions["generation-v"]["black-white"].animated
       ?.front_default || pokemon.sprites.front_default;
 
-  // Get Pokemon cry sound URLs - using both PokeAPI and Pokemon Showdown as options
-  // PokeAPI format: https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/{id}.ogg
-  // Pokemon Showdown format: https://play.pokemonshowdown.com/audio/cries/{name}.mp3
-  const pokeApiSoundUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokemon.id}.ogg`;
-  const showdownSoundUrl = `https://play.pokemonshowdown.com/audio/cries/${pokemon.name.toLowerCase()}.mp3`;
-
   // Create detail view HTML
   pokemonDetailCard.innerHTML = `
     <div class="detail-header">
@@ -199,47 +193,27 @@ async function showPokemonDetail(pokemon) {
   // Add click event listener to play sound when the image is clicked
   const detailImage = pokemonDetailCard.querySelector(".detail-image");
   detailImage.addEventListener("click", () => {
-    playPokemonCry(pokemon.id, pokemon.name);
+    playPokemonCry(pokemon.name);
   });
 }
 
 // Function to play Pokemon cry with fallback mechanism
-async function playPokemonCry(pokemonId, pokemonName) {
-  // Create audio element
+async function playPokemonCry(pokemonName) {
   let audio = new Audio();
-
-  // Try PokeAPI sound first
-  const pokeApiSoundUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokemonId}.ogg`;
   const showdownSoundUrl = `https://play.pokemonshowdown.com/audio/cries/${pokemonName.toLowerCase()}.mp3`;
 
   try {
-    // Show visual feedback
     const soundIcon = document.querySelector(".sound-icon");
     if (soundIcon) {
       soundIcon.textContent = "🔈";
       soundIcon.style.animation = "pulse 0.5s infinite";
     }
 
-    // Try PokeAPI sound first
-    audio.src = pokeApiSoundUrl;
+    audio.src = showdownSoundUrl;
     await audio.play();
   } catch (error) {
-    console.log(
-      `Failed to play PokeAPI sound for ${pokemonName}, trying fallback...`
-    );
-
-    // Try Pokemon Showdown sound as fallback
-    try {
-      audio = new Audio(showdownSoundUrl);
-      await audio.play();
-    } catch (fallbackError) {
-      console.error(
-        `Failed to play sound for ${pokemonName} from both sources`,
-        fallbackError
-      );
-    }
+    console.error(`Failed to play sound for ${pokemonName}`, error);
   } finally {
-    // Reset visual feedback after playing (or attempting to play)
     setTimeout(() => {
       const soundIcon = document.querySelector(".sound-icon");
       if (soundIcon) {
