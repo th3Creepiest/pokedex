@@ -1,6 +1,10 @@
-// Constants
+import {
+  fetchPokemonList,
+  fetchPokemonByNameOrId,
+  fetchPokemonSpecies,
+} from "./api.js";
+
 const POKEMON_COUNT = 50;
-const API_BASE_URL = "https://pokeapi.co/api/v2/";
 const THEME_KEY = "pokedex-theme";
 
 // DOM Elements
@@ -10,15 +14,13 @@ const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
 const themeToggle = document.getElementById("theme-toggle");
 
-// State
+// States
 let allPokemon = [];
 let currentTheme = "dark"; // Default theme is dark
 let selectedPokemonId = null;
 
-// Initialize the app
 async function initApp() {
   try {
-    // Load saved theme or use default
     loadTheme();
 
     // Show loading state
@@ -40,29 +42,6 @@ async function initApp() {
   }
 }
 
-// Fetch Pokemon list from API
-async function fetchPokemonList(count) {
-  try {
-    // Fetch basic Pokemon list
-    const response = await fetch(`${API_BASE_URL}pokemon?limit=${count}`);
-    const data = await response.json();
-
-    // Fetch detailed data for each Pokemon
-    const detailedPokemon = await Promise.all(
-      data.results.map(async (pokemon) => {
-        const detailResponse = await fetch(pokemon.url);
-        return await detailResponse.json();
-      })
-    );
-
-    return detailedPokemon;
-  } catch (error) {
-    console.error("Error fetching Pokemon list:", error);
-    throw error;
-  }
-}
-
-// Render Pokemon list
 function renderPokemonList(pokemonList) {
   // Clear the list
   document.getElementById("pokemon-list").innerHTML = "";
@@ -143,8 +122,7 @@ function createPokemonListItem(pokemon) {
 // Show Pokemon detail view
 async function showPokemonDetail(pokemon) {
   // Get species data for additional info
-  const speciesResponse = await fetch(pokemon.species.url);
-  const speciesData = await speciesResponse.json();
+  const speciesData = await fetchPokemonSpecies(pokemon.species.url);
 
   // Find English flavor text
   const flavorText =
@@ -269,29 +247,6 @@ async function playPokemonCry(pokemonId, pokemonName) {
         soundIcon.style.animation = "";
       }
     }, 500);
-  }
-}
-
-// Fetch a single Pokemon by name or ID
-async function fetchPokemonByNameOrId(nameOrId) {
-  try {
-    // Convert to lowercase for name search
-    const query = nameOrId.toLowerCase();
-
-    // Make API request
-    const response = await fetch(`${API_BASE_URL}pokemon/${query}`);
-
-    // If the response is not ok, throw an error
-    if (!response.ok) {
-      throw new Error(`Pokemon '${nameOrId}' not found`);
-    }
-
-    // Parse and return the data
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching Pokemon:", error);
-    throw error;
   }
 }
 
