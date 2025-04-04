@@ -337,31 +337,20 @@ async function handleSearch() {
 }
 
 // Theme functions
+
 function loadTheme() {
-  // Check if theme is saved in localStorage
   const savedTheme = localStorage.getItem(THEME_KEY);
-
-  if (savedTheme) {
-    currentTheme = savedTheme;
-  }
-
-  // Apply the theme
+  if (savedTheme) currentTheme = savedTheme;
   applyTheme();
 }
 
 function toggleTheme() {
-  // Switch between light and dark themes
   currentTheme = currentTheme === "dark" ? "light" : "dark";
-
-  // Save theme preference
   localStorage.setItem(THEME_KEY, currentTheme);
-
-  // Apply the theme
   applyTheme();
 }
 
 function applyTheme() {
-  // Update body class
   if (currentTheme === "light") {
     document.body.classList.add("light-theme");
     themeToggle.querySelector(".theme-icon").textContent = "🌙";
