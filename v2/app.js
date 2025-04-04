@@ -210,6 +210,29 @@ async function showPokemonDetail(pokemon) {
   `;
 }
 
+// Fetch a single Pokemon by name or ID
+async function fetchPokemonByNameOrId(nameOrId) {
+  try {
+    // Convert to lowercase for name search
+    const query = nameOrId.toLowerCase();
+
+    // Make API request
+    const response = await fetch(`${API_BASE_URL}pokemon/${query}`);
+
+    // If the response is not ok, throw an error
+    if (!response.ok) {
+      throw new Error(`Pokemon '${nameOrId}' not found`);
+    }
+
+    // Parse and return the data
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching Pokemon:", error);
+    throw error;
+  }
+}
+
 // Filter Pokemon by search term
 function filterPokemon(searchTerm) {
   if (!searchTerm) {
@@ -242,17 +265,13 @@ function filterPokemon(searchTerm) {
 function setupEventListeners() {
   // Search button click
   searchButton.addEventListener("click", () => {
-    const searchTerm = searchInput.value.trim();
-    const filteredPokemon = filterPokemon(searchTerm);
-    renderPokemonList(filteredPokemon);
+    handleSearch();
   });
 
   // Search input enter key
   searchInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") {
-      const searchTerm = searchInput.value.trim();
-      const filteredPokemon = filterPokemon(searchTerm);
-      renderPokemonList(filteredPokemon);
+      handleSearch();
     }
   });
 
@@ -265,6 +284,65 @@ function setupEventListeners() {
 
   // Theme toggle button click
   themeToggle.addEventListener("click", toggleTheme);
+}
+
+// Handle search functionality
+async function handleSearch() {
+  const searchTerm = searchInput.value.trim();
+
+  if (!searchTerm) {
+    renderPokemonList(allPokemon);
+    return;
+  }
+
+  // First try to filter from existing Pokemon
+  const filteredPokemon = filterPokemon(searchTerm);
+
+  if (filteredPokemon.length > 0) {
+    // If we found matches in our current list, display them
+    renderPokemonList(filteredPokemon);
+  } else {
+    // If no matches in our current list, try to fetch from API
+    try {
+      // Show loading state
+      pokemonList.innerHTML = '<p class="loading">Searching for Pokémon...</p>';
+
+      // Try to fetch the Pokemon by name or ID
+      const pokemon = await fetchPokemonByNameOrId(searchTerm);
+
+      // If found, show it in the list
+      if (pokemon) {
+        // Add to our list if not already there
+        if (!allPokemon.some((p) => p.id === pokemon.id)) {
+          allPokemon.push(pokemon);
+        }
+
+        // Show just this Pokemon in the list
+        renderPokemonList([pokemon]);
+
+        // Automatically select and show details
+        const listItem = document.querySelector(
+          `.pokemon-list-item[data-id="${pokemon.id}"]`
+        );
+        if (listItem) {
+          listItem.click();
+        }
+      }
+    } catch (error) {
+      // Show error message if Pokemon not found
+      pokemonList.innerHTML = `
+        <p class="error">Pokémon "${searchTerm}" not found. Please try a different search.</p>
+      `;
+
+      // Clear the detail view
+      pokemonDetailCard.innerHTML = `
+        <div class="empty-state">
+          <p>Select a Pokémon to view details</p>
+        </div>
+      `;
+      selectedPokemonId = null;
+    }
+  }
 }
 
 // Theme functions
