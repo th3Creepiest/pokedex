@@ -10,7 +10,7 @@ A modern, responsive Pokédex web application built with HTML, CSS, and vanilla 
 ## 📋 Table of Contents
 
 - [Features](#features)
-- [Project Versions](#project-versions)
+
 - [Installation](#installation)
 - [Usage](#usage)
 - [Technologies Used](#technologies-used)
@@ -26,23 +26,6 @@ A modern, responsive Pokédex web application built with HTML, CSS, and vanilla 
 - **Theme Toggle**: Switch between light and dark themes
 - **Animated Sprites**: Display animated sprites when available
 
-## 🔄 Project Versions
-
-This repository contains two versions of the Pokédex application:
-
-### Version 1 (v1)
-
-- **Grid Layout**: Displays Pokémon in a card grid format
-- **Modal Details**: Shows Pokémon details in a modal overlay when a card is clicked
-- **Simple UI**: Straightforward user interface with all Pokémon displayed at once
-
-### Version 2 (v2)
-
-- **Split View Layout**: Features a sidebar list of Pokémon and a details panel
-- **Persistent Selection**: Maintains selected Pokémon state during searches
-- **Enhanced UI**: Improved user experience with a more app-like interface
-- **Optimized for Larger Screens**: Better utilizes screen space on desktop devices
-
 ## 🚀 Installation
 
 No installation is required! This is a client-side web application that runs directly in your browser.
@@ -53,12 +36,10 @@ No installation is required! This is a client-side web application that runs dir
    git clone https://github.com/yourusername/pokedex.git
    ```
 
-2. Navigate to either version directory:
+2. Open the project directory:
 
    ```bash
-   cd pokedex/v1
-   # or
-   cd pokedex/v2
+   cd pokedex
    ```
 
 3. Open the `index.html` file in your web browser:
@@ -67,19 +48,10 @@ No installation is required! This is a client-side web application that runs dir
 
 ## 🎮 Usage
 
-### Version 1
-
-1. Browse the grid of Pokémon cards
-2. Click on a card to view detailed information
+1. Browse Pokémon cards in a grid layout
+2. Click any card to view detailed information
 3. Use the search bar to find specific Pokémon
-4. Toggle between light and dark themes using the sun/moon button
-
-### Version 2
-
-1. Browse the list of Pokémon on the left sidebar
-2. Click on a Pokémon to view its details in the right panel
-3. Use the search bar to filter the Pokémon list
-4. Toggle between light and dark themes using the sun/moon button
+4. Toggle between light/dark themes using the theme button
 
 ## 💻 Technologies Used
 
