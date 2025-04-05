@@ -128,12 +128,7 @@ export async function searchPokemonFromAPI(
  * @returns {Array} - Filtered list of Pokémon
  */
 export function filterPokemon(searchTerm) {
-  // Return all Pokémon if no search term
-  if (!searchTerm) {
-    return getPokemonList()
-  }
-
-  // Normalize search term
+  if (!searchTerm) return getPokemonList()
   const normalizedTerm = searchTerm.toLowerCase()
 
   // Filter Pokémon that match any criteria
