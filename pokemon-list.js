@@ -1,8 +1,3 @@
-/**
- * Pokemon List Module
- * Handles the rendering and interaction with the Pokemon list in the UI
- */
-
 import {
   showPokemonDetailError,
   renderPokemonDetailCard,
@@ -20,7 +15,7 @@ import {
 
 const POKEMON_COUNT = 50 // Number of Pokémon to load initially
 
-// DOM Elements references for search functionality
+// DOM Elements
 let pokemonListElement
 let searchInput = null
 let searchButton = null
@@ -46,33 +41,18 @@ export async function initializePokemonList(
     searchInput = inputElement
     searchButton = buttonElement
     onPokemonSelectCallback = showPokemonDetail
-
-    // Show loading state
-    showPokemonListLoadingState()
-
+    pokemonListElement.innerHTML = '<p class="loading">Loading Pokémon...</p>'
     // Fetch initial Pokémon data
     const pokemonData = await fetchPokemonList(POKEMON_COUNT)
-
-    // Set the collection
-    setPokemonCollection(pokemonData)
-
+    allPokemon = pokemonData
     // Render the list
     renderPokemonList(pokemonData)
-
     // Set up event listeners
     setupEventListeners(detailCardElement, fetchPokemonByNameOrId)
   } catch (error) {
     console.error("Error initializing Pokemon list:", error)
-    showPokemonListErrorState("Failed to load Pokémon. Please try again later.")
+    pokemonListElement.innerHTML = `<p class="error">Failed to load Pokémon. Please try again later.</p>`
   }
-}
-
-/**
- * Set the full Pokemon collection
- * @param {Array} pokemonData - Array of all Pokemon objects
- */
-export function setPokemonCollection(pokemonData) {
-  allPokemon = pokemonData
 }
 
 /**
@@ -81,21 +61,6 @@ export function setPokemonCollection(pokemonData) {
  */
 export function getPokemonCollection() {
   return allPokemon
-}
-
-/**
- * Display loading indicator in the Pokémon list
- */
-export function showPokemonListLoadingState() {
-  pokemonListElement.innerHTML = '<p class="loading">Loading Pokémon...</p>'
-}
-
-/**
- * Display error message in the Pokémon list
- * @param {string} message - Error message to display
- */
-export function showPokemonListErrorState(message) {
-  pokemonListElement.innerHTML = `<p class="error">${message}</p>`
 }
 
 /**
