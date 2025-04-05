@@ -3,7 +3,12 @@
  * Handles the rendering and interaction with the Pokemon list in the UI
  */
 
-import { fetchPokemonSpecies, getPokemonCryUrl } from "./api.js"
+import {
+  fetchPokemonSpecies,
+  getPokemonCryUrl,
+  fetchPokemonList,
+  fetchPokemonByNameOrId,
+} from "./api.js"
 import {
   showPokemonDetailError,
   renderPokemonDetailCard,
@@ -11,6 +16,8 @@ import {
   getBestPokemonSprite,
   setupPokemonCryPlayback,
 } from "./pokemon-card.js"
+
+const POKEMON_COUNT = 50 // Number of Pokémon to load initially
 
 // DOM Elements references for search functionality
 let pokemonListElement
@@ -439,5 +446,64 @@ export async function searchPokemonFromAPI(
     showSearchError(searchTerm)
     // Reset detail view
     resetDetailViewFn()
+  }
+}
+
+/**
+ * Set up all event listeners for the Pokemon list functionality
+ * @param {HTMLElement} detailCardElement - The Pokemon detail card element
+ * @param {Function} fetchPokemonByNameOrIdFn - Function to fetch Pokemon by name or ID
+ */
+export function setupEventListeners(
+  detailCardElement,
+  fetchPokemonByNameOrIdFn
+) {
+  // Create search handler function
+  const searchHandler = () =>
+    handleSearch(
+      (term) =>
+        searchPokemonFromAPI(term, fetchPokemonByNameOrIdFn, () =>
+          resetDetailView(detailCardElement)
+        ),
+      () => resetDetailView(detailCardElement)
+    )
+
+  setupSearchEvents(searchHandler)
+}
+
+/**
+ * Initialize the Pokemon list with data
+ * @param {HTMLElement} listElement - The DOM element to render Pokemon list into
+ * @param {HTMLElement} inputElement - The search input element
+ * @param {HTMLElement} buttonElement - The search button element
+ * @param {HTMLElement} detailCardElement - The Pokemon detail card element
+ * @param {Function} fetchPokemonByNameOrIdFn - Function to fetch Pokemon by name or ID
+ * @returns {Promise<void>}
+ */
+export async function initializePokemonList(
+  listElement,
+  inputElement,
+  buttonElement,
+  detailCardElement
+) {
+  try {
+    // Initialize the Pokemon list UI components
+    initPokemonList(listElement, inputElement, buttonElement)
+
+    // Show loading state
+    showPokemonListLoadingState()
+
+    // Fetch initial Pokémon data
+    const pokemonData = await fetchPokemonList(POKEMON_COUNT)
+
+    // Set the collection and render the list
+    setPokemonCollection(pokemonData)
+    renderPokemonList(pokemonData)
+
+    // Set up event listeners
+    setupEventListeners(detailCardElement, fetchPokemonByNameOrId)
+  } catch (error) {
+    console.error("Error initializing Pokemon list:", error)
+    showPokemonListErrorState("Failed to load Pokémon. Please try again later.")
   }
 }

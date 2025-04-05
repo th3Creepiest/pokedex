@@ -4,21 +4,8 @@
  */
 
 import { loadTheme, toggleTheme } from "./theme.js"
+import { initializePokemonList } from "./pokemon-list.js"
 import { initPokemonDetailCard } from "./pokemon-card.js"
-import { fetchPokemonList, fetchPokemonByNameOrId } from "./api.js"
-import {
-  initPokemonList,
-  setPokemonCollection,
-  showPokemonListLoadingState,
-  showPokemonListErrorState,
-  renderPokemonList,
-  resetDetailView,
-  setupSearchEvents,
-  handleSearch,
-  searchPokemonFromAPI,
-} from "./pokemon-list.js"
-
-const POKEMON_COUNT = 50 // Number of Pokémon to load initially
 
 // DOM Elements
 const pokemonList = document.getElementById("pokemon-list")
@@ -31,34 +18,17 @@ export async function initApp() {
   try {
     loadTheme()
     initPokemonDetailCard(pokemonDetailCard)
-    initPokemonList(pokemonList, searchInput, searchButton)
 
-    showPokemonListLoadingState()
-
-    // Fetch initial Pokémon data
-    const pokemonData = await fetchPokemonList(POKEMON_COUNT)
-
-    setPokemonCollection(pokemonData)
-    renderPokemonList(pokemonData)
-
-    setupEventListeners()
-  } catch (error) {
-    console.error("Error initializing app:", error)
-    showPokemonListErrorState("Failed to load Pokémon. Please try again later.")
-  }
-}
-
-function setupEventListeners() {
-  // Create search handler function
-  const searchHandler = () =>
-    handleSearch(
-      (term) =>
-        searchPokemonFromAPI(term, fetchPokemonByNameOrId, () =>
-          resetDetailView(pokemonDetailCard)
-        ),
-      () => resetDetailView(pokemonDetailCard)
+    // Initialize Pokemon list with all required parameters
+    await initializePokemonList(
+      pokemonList,
+      searchInput,
+      searchButton,
+      pokemonDetailCard
     )
 
-  setupSearchEvents(searchHandler)
-  themeToggle.addEventListener("click", toggleTheme)
+    themeToggle.addEventListener("click", toggleTheme)
+  } catch (error) {
+    console.error("Error initializing app:", error)
+  }
 }
