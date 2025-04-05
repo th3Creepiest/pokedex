@@ -1,4 +1,10 @@
 import {
+  initializeSearch,
+  handleSearch,
+  searchPokemonFromAPI,
+} from "./pokemon-search.js"
+
+import {
   showPokemonDetailError,
   renderPokemonDetailCard,
   getPokemonDescription,
@@ -17,8 +23,6 @@ const POKEMON_COUNT = 50 // Number of Pokémon to load initially
 
 // DOM Elements
 let pokemonListElement
-let searchInput = null
-let searchButton = null
 
 // State variables
 let allPokemon = [] // Stores all loaded Pokémon data
@@ -39,8 +43,6 @@ export async function initializePokemonList(
 ) {
   try {
     pokemonListElement = listElement
-    searchInput = inputElement
-    searchButton = buttonElement
     onPokemonSelectCallback = showPokemonDetail
     pokemonListElement.innerHTML = '<p class="loading">Loading Pokémon...</p>'
 
@@ -51,17 +53,27 @@ export async function initializePokemonList(
     // Render the list
     renderPokemonList(pokemonData)
 
-    // Set up event listeners
-    const searchHandler = () =>
+    // Initialize search functionality
+    const searchCallback = () =>
       handleSearch(
         (term) =>
-          searchPokemonFromAPI(term, fetchPokemonByNameOrId, () =>
-            resetDetailView(detailCardElement)
+          searchPokemonFromAPI(
+            term,
+            fetchPokemonByNameOrId,
+            () => resetDetailView(detailCardElement),
+            processFetchedPokemon,
+            showSearchingState,
+            showSearchError
           ),
         () => resetDetailView(detailCardElement)
       )
 
-    setupSearchEvents(searchHandler)
+    initializeSearch(
+      inputElement,
+      buttonElement,
+      searchCallback,
+      getPokemonCollection
+    )
   } catch (error) {
     console.error("Error initializing Pokemon list:", error)
     pokemonListElement.innerHTML = `<p class="error">Failed to load Pokémon. Please try again later.</p>`
@@ -249,60 +261,6 @@ function clearPreviousSelection() {
 }
 
 /**
- * Filter Pokémon list based on search term
- * @param {string} searchTerm - Term to search for
- * @returns {Array} - Filtered list of Pokémon
- */
-export function filterPokemon(searchTerm) {
-  // Return all Pokémon if no search term
-  if (!searchTerm) {
-    return allPokemon
-  }
-
-  // Normalize search term
-  const normalizedTerm = searchTerm.toLowerCase()
-
-  // Filter Pokémon that match any criteria
-  return allPokemon.filter((pokemon) => {
-    return (
-      matchesByName(pokemon, normalizedTerm) ||
-      matchesById(pokemon, normalizedTerm) ||
-      matchesByType(pokemon, normalizedTerm)
-    )
-  })
-}
-
-/**
- * Check if Pokémon matches by name
- * @param {Object} pokemon - Pokémon to check
- * @param {string} term - Search term
- * @returns {boolean} - Whether it matches
- */
-function matchesByName(pokemon, term) {
-  return pokemon.name.includes(term)
-}
-
-/**
- * Check if Pokémon matches by ID
- * @param {Object} pokemon - Pokémon to check
- * @param {string} term - Search term
- * @returns {boolean} - Whether it matches
- */
-function matchesById(pokemon, term) {
-  return pokemon.id.toString() === term
-}
-
-/**
- * Check if Pokémon matches by type
- * @param {Object} pokemon - Pokémon to check
- * @param {string} term - Search term
- * @returns {boolean} - Whether it matches
- */
-function matchesByType(pokemon, term) {
-  return pokemon.types.some((type) => type.type.name.includes(term))
-}
-
-/**
  * Process a Pokémon fetched from the API
  * @param {Object} pokemon - Fetched Pokémon data
  */
@@ -372,83 +330,4 @@ export function resetDetailView(detailCardElement) {
     </div>
   `
   clearPokemonSelection()
-}
-
-/**
- * Set up search-related event listeners
- * @param {Function} searchHandler - The function to handle search
- */
-export function setupSearchEvents(searchHandler) {
-  // Search button click
-  searchButton.addEventListener("click", searchHandler)
-
-  // Search input enter key
-  searchInput.addEventListener("keyup", (event) => {
-    if (event.key === "Enter") {
-      searchHandler()
-    }
-  })
-
-  // Reset search when input is cleared
-  searchInput.addEventListener("input", () => {
-    if (searchInput.value.trim() === "") {
-      renderPokemonList(getPokemonCollection())
-    }
-  })
-}
-
-/**
- * Handle search functionality
- * @param {Function} searchPokemonAPI - Function to search Pokemon from API
- * @param {Function} resetDetailViewFn - Function to reset detail view
- */
-export function handleSearch(searchPokemonAPI, resetDetailViewFn) {
-  const searchTerm = searchInput.value.trim()
-
-  // If search is empty, show all Pokémon
-  if (!searchTerm) {
-    renderPokemonList(getPokemonCollection())
-    return
-  }
-
-  // First try to filter from existing Pokémon
-  const filteredPokemon = filterPokemon(searchTerm)
-
-  if (filteredPokemon.length > 0) {
-    // Display matches from current list
-    renderPokemonList(filteredPokemon)
-  } else {
-    // Try to fetch from API if not found locally
-    searchPokemonAPI(searchTerm, resetDetailViewFn)
-  }
-}
-
-/**
- * Search for a Pokémon from the API
- * @param {string} searchTerm - Term to search for
- * @param {Function} fetchPokemonByNameOrId - Function to fetch Pokemon data
- * @param {Function} resetDetailViewFn - Function to reset detail view
- */
-export async function searchPokemonFromAPI(
-  searchTerm,
-  fetchPokemonByNameOrId,
-  resetDetailViewFn
-) {
-  try {
-    // Show searching indicator
-    showSearchingState()
-
-    // Fetch Pokémon data
-    const pokemon = await fetchPokemonByNameOrId(searchTerm)
-
-    // Process the found Pokémon
-    if (pokemon) {
-      processFetchedPokemon(pokemon)
-    }
-  } catch (error) {
-    // Handle search error
-    showSearchError(searchTerm)
-    // Reset detail view
-    resetDetailViewFn()
-  }
 }
