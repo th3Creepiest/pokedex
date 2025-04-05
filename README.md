@@ -55,12 +55,12 @@ No installation is required! This is a client-side web application that runs dir
 
 ## 💻 Technologies Used
 
-- **HTML5**: Structure and content
-- **CSS3**: Styling, animations, and responsive design
+- **HTML**: Structure and content
+- **CSS**: Styling, animations, and responsive design
   - Custom properties (CSS variables) for theming
-  - Flexbox and Grid for layouts
+  - FlexBox and Grid for layouts
   - Media queries for responsiveness
-- **JavaScript (ES6+)**:
+- **JavaScript**:
   - Fetch API for data retrieval
   - Async/await for asynchronous operations
   - DOM manipulation
@@ -76,6 +76,8 @@ Endpoints used:
 - `https://pokeapi.co/api/v2/pokemon?limit=50` - Get first 50 Pokémon
 - `https://pokeapi.co/api/v2/pokemon/{id or name}` - Get specific Pokémon details
 - `https://pokeapi.co/api/v2/pokemon-species/{id}` - Get Pokémon species information
+
+Pokémon cries are sourced from [Pokémon Showdown](https://play.pokemonshowdown.com/audio/cries/).
 
 ## 📝 License
 
