@@ -18,7 +18,7 @@ const themeToggle = document.getElementById("theme-toggle");
 let allPokemon = [];
 let selectedPokemonId = null;
 
-async function initApp() {
+export async function initApp() {
   try {
     loadTheme();
 
@@ -334,6 +334,3 @@ async function handleSearch() {
     }
   }
 }
-
-// Start the app when DOM is loaded
-document.addEventListener("DOMContentLoaded", initApp);
