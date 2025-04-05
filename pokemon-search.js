@@ -41,11 +41,17 @@ export function initializeSearch(inputElement, buttonElement) {
  * @param {Function} searchPokemonAPI - Function to search Pokemon from API
  */
 function handleSearch(searchPokemonAPI) {
-  const searchTerm = searchInput.value.trim()
-  if (!searchTerm) return
-  const filteredPokemon = filterPokemon(searchTerm)
-  if (filteredPokemon.length > 0) renderPokemonList(filteredPokemon)
-  else searchPokemonAPI(searchTerm)
+  return () => {
+    if (!searchInput) {
+      console.error("Search input element not initialized")
+      return
+    }
+    const searchTerm = searchInput.value.trim()
+    if (!searchTerm) return
+    const filteredPokemon = filterPokemon(searchTerm)
+    if (filteredPokemon.length > 0) renderPokemonList(filteredPokemon)
+    else searchPokemonAPI(searchTerm)
+  }
 }
 
 /**
