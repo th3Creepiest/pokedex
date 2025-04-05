@@ -1,13 +1,8 @@
-/**
- * Pokemon Detail Card
- * Handles the rendering of Pokemon detail information in the UI
- */
-
-// Reference to the DOM element that displays Pokemon details
+// DOM Element
 let pokemonDetailCard
 
 /**
- * Initialize the renderer with the necessary DOM element
+ * Initialize the Pokemon Detail Card
  * @param {HTMLElement} detailCardElement - The DOM element to render Pokemon details into
  */
 export function initPokemonDetailCard(detailCardElement) {
