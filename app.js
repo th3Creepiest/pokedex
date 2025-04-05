@@ -13,11 +13,9 @@ import {
   showPokemonListErrorState,
   renderPokemonList,
   resetDetailView,
-  initSearchElements,
   setupSearchEvents,
   handleSearch,
   searchPokemonFromAPI,
-  showPokemonDetail,
 } from "./pokemon-list.js"
 
 const POKEMON_COUNT = 50 // Number of Pokémon to load initially
@@ -33,7 +31,7 @@ export async function initApp() {
   try {
     loadTheme()
     initPokemonDetailCard(pokemonDetailCard)
-    initPokemonList(pokemonList, showPokemonDetail)
+    initPokemonList(pokemonList, searchInput, searchButton)
 
     showPokemonListLoadingState()
 
@@ -51,9 +49,6 @@ export async function initApp() {
 }
 
 function setupEventListeners() {
-  // Initialize search elements
-  initSearchElements(searchInput, searchButton)
-
   // Create search handler function
   const searchHandler = () =>
     handleSearch(

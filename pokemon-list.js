@@ -3,6 +3,7 @@
  * Handles the rendering and interaction with the Pokemon list in the UI
  */
 
+import { fetchPokemonSpecies, getPokemonCryUrl } from "./api.js"
 import {
   showPokemonDetailError,
   renderPokemonDetailCard,
@@ -10,9 +11,12 @@ import {
   getBestPokemonSprite,
   setupPokemonCryPlayback,
 } from "./pokemon-card.js"
-import { fetchPokemonSpecies, getPokemonCryUrl } from "./api.js"
 
-let pokemonListElement // Reference to the DOM element that displays Pokemon list
+// DOM Elements references for search functionality
+let pokemonListElement
+let searchInput = null
+let searchButton = null
+
 let allPokemon = [] // Stores all loaded Pokémon data
 let selectedPokemonId = null // Currently selected Pokémon ID
 let onPokemonSelectCallback = null // Callback function when a Pokemon is selected
@@ -20,11 +24,14 @@ let onPokemonSelectCallback = null // Callback function when a Pokemon is select
 /**
  * Initialize the Pokemon list with the necessary DOM element and callback
  * @param {HTMLElement} listElement - The DOM element to render Pokemon list into
- * @param {Function} selectCallback - Callback function when a Pokemon is selected
+ * @param {HTMLElement} inputElement - The search input element
+ * @param {HTMLElement} buttonElement - The search button element
  */
-export function initPokemonList(listElement, selectCallback) {
+export function initPokemonList(listElement, inputElement, buttonElement) {
   pokemonListElement = listElement
-  onPokemonSelectCallback = selectCallback
+  onPokemonSelectCallback = showPokemonDetail
+  searchInput = inputElement
+  searchButton = buttonElement
 }
 
 /**
@@ -354,20 +361,6 @@ export function resetDetailView(detailCardElement) {
     </div>
   `
   clearPokemonSelection()
-}
-
-// DOM Elements references for search functionality
-let searchInput = null
-let searchButton = null
-
-/**
- * Initialize search functionality
- * @param {HTMLElement} inputElement - The search input element
- * @param {HTMLElement} buttonElement - The search button element
- */
-export function initSearchElements(inputElement, buttonElement) {
-  searchInput = inputElement
-  searchButton = buttonElement
 }
 
 /**
