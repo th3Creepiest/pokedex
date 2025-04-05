@@ -50,7 +50,7 @@ export async function initializePokemonList(listElement) {
  * Get the full Pokemon collection
  * @returns {Array} - Array of all Pokemon objects
  */
-export function getPokemonCollection() {
+export function getPokemonList() {
   return allPokemon
 }
 

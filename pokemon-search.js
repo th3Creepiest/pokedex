@@ -1,12 +1,8 @@
-import { getPokemonCollection, renderPokemonList } from "./pokemon-list.js"
 import { fetchPokemonByNameOrId } from "./api.js"
+import { getPokemonList, renderPokemonList } from "./pokemon-list.js"
 
-// DOM Elements
 let searchInput = null
 let searchButton = null
-
-// State variables
-let getPokemonCollectionFn = null // Function to get the Pokemon collection
 
 /**
  * Initialize the search functionality
@@ -21,7 +17,6 @@ export function initializeSearch(
 ) {
   searchInput = inputElement
   searchButton = buttonElement
-  getPokemonCollectionFn = getPokemonCollection
 
   // Initialize search functionality
   const searchCallback = () =>
@@ -60,7 +55,7 @@ export function setupSearchEvents(searchHandler) {
   // Reset search when input is cleared
   searchInput.addEventListener("input", () => {
     if (searchInput.value.trim() === "") {
-      renderPokemonList(getPokemonCollectionFn())
+      renderPokemonList(getPokemonList())
     }
   })
 }
@@ -75,7 +70,7 @@ export function handleSearch(searchPokemonAPI, resetDetailViewFn) {
 
   // If search is empty, show all Pokémon
   if (!searchTerm) {
-    renderPokemonList(getPokemonCollectionFn())
+    renderPokemonList(getPokemonList())
     return
   }
 
@@ -135,14 +130,14 @@ export async function searchPokemonFromAPI(
 export function filterPokemon(searchTerm) {
   // Return all Pokémon if no search term
   if (!searchTerm) {
-    return getPokemonCollectionFn()
+    return getPokemonList()
   }
 
   // Normalize search term
   const normalizedTerm = searchTerm.toLowerCase()
 
   // Filter Pokémon that match any criteria
-  return getPokemonCollectionFn().filter((pokemon) => {
+  return getPokemonList().filter((pokemon) => {
     return (
       matchesByName(pokemon, normalizedTerm) ||
       matchesById(pokemon, normalizedTerm) ||
