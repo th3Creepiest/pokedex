@@ -2,6 +2,7 @@ import {
   fetchPokemonList,
   fetchPokemonByNameOrId,
   fetchPokemonSpecies,
+  getPokemonCryUrl,
 } from "./api.js";
 import { loadTheme, toggleTheme } from "./theme.js";
 
@@ -199,7 +200,7 @@ async function showPokemonDetail(pokemon) {
 // Function to play Pokemon cry with fallback mechanism
 async function playPokemonCry(pokemonName) {
   let audio = new Audio();
-  const showdownSoundUrl = `https://play.pokemonshowdown.com/audio/cries/${pokemonName.toLowerCase()}.mp3`;
+  const showdownSoundUrl = getPokemonCryUrl(pokemonName);
 
   try {
     const soundIcon = document.querySelector(".sound-icon");

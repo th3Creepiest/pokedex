@@ -41,3 +41,12 @@ export async function fetchPokemonSpecies(speciesUrl) {
     throw error;
   }
 }
+
+/**
+ * Returns the PokemonShowdown URL for a Pokemon's cry sound.
+ * @param {string} pokemonName - The name of the Pokemon
+ * @returns {string} The URL to the Pokemon's cry sound file
+ */
+export function getPokemonCryUrl(pokemonName) {
+  return `https://play.pokemonshowdown.com/audio/cries/${pokemonName.toLowerCase()}.mp3`;
+}
