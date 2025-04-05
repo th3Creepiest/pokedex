@@ -4,18 +4,19 @@
  */
 
 import {
-  fetchPokemonSpecies,
-  getPokemonCryUrl,
-  fetchPokemonList,
-  fetchPokemonByNameOrId,
-} from "./api.js"
-import {
   showPokemonDetailError,
   renderPokemonDetailCard,
   getPokemonDescription,
   getBestPokemonSprite,
   setupPokemonCryPlayback,
 } from "./pokemon-card.js"
+
+import {
+  fetchPokemonSpecies,
+  getPokemonCryUrl,
+  fetchPokemonList,
+  fetchPokemonByNameOrId,
+} from "./api.js"
 
 const POKEMON_COUNT = 50 // Number of Pokémon to load initially
 
@@ -29,16 +30,41 @@ let selectedPokemonId = null // Currently selected Pokémon ID
 let onPokemonSelectCallback = null // Callback function when a Pokemon is selected
 
 /**
- * Initialize the Pokemon list with the necessary DOM element and callback
  * @param {HTMLElement} listElement - The DOM element to render Pokemon list into
  * @param {HTMLElement} inputElement - The search input element
  * @param {HTMLElement} buttonElement - The search button element
+ * @param {HTMLElement} detailCardElement - The Pokemon detail card element
  */
-export function initPokemonList(listElement, inputElement, buttonElement) {
-  pokemonListElement = listElement
-  onPokemonSelectCallback = showPokemonDetail
-  searchInput = inputElement
-  searchButton = buttonElement
+export async function initializePokemonList(
+  listElement,
+  inputElement,
+  buttonElement,
+  detailCardElement
+) {
+  try {
+    pokemonListElement = listElement
+    searchInput = inputElement
+    searchButton = buttonElement
+    onPokemonSelectCallback = showPokemonDetail
+
+    // Show loading state
+    showPokemonListLoadingState()
+
+    // Fetch initial Pokémon data
+    const pokemonData = await fetchPokemonList(POKEMON_COUNT)
+
+    // Set the collection
+    setPokemonCollection(pokemonData)
+
+    // Render the list
+    renderPokemonList(pokemonData)
+
+    // Set up event listeners
+    setupEventListeners(detailCardElement, fetchPokemonByNameOrId)
+  } catch (error) {
+    console.error("Error initializing Pokemon list:", error)
+    showPokemonListErrorState("Failed to load Pokémon. Please try again later.")
+  }
 }
 
 /**
@@ -469,41 +495,4 @@ export function setupEventListeners(
     )
 
   setupSearchEvents(searchHandler)
-}
-
-/**
- * Initialize the Pokemon list with data
- * @param {HTMLElement} listElement - The DOM element to render Pokemon list into
- * @param {HTMLElement} inputElement - The search input element
- * @param {HTMLElement} buttonElement - The search button element
- * @param {HTMLElement} detailCardElement - The Pokemon detail card element
- * @param {Function} fetchPokemonByNameOrIdFn - Function to fetch Pokemon by name or ID
- * @returns {Promise<void>}
- */
-export async function initializePokemonList(
-  listElement,
-  inputElement,
-  buttonElement,
-  detailCardElement
-) {
-  try {
-    // Initialize the Pokemon list UI components
-    initPokemonList(listElement, inputElement, buttonElement)
-
-    // Show loading state
-    showPokemonListLoadingState()
-
-    // Fetch initial Pokémon data
-    const pokemonData = await fetchPokemonList(POKEMON_COUNT)
-
-    // Set the collection and render the list
-    setPokemonCollection(pokemonData)
-    renderPokemonList(pokemonData)
-
-    // Set up event listeners
-    setupEventListeners(detailCardElement, fetchPokemonByNameOrId)
-  } catch (error) {
-    console.error("Error initializing Pokemon list:", error)
-    showPokemonListErrorState("Failed to load Pokémon. Please try again later.")
-  }
 }

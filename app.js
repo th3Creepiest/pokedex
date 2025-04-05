@@ -14,21 +14,20 @@ const searchInput = document.getElementById("search-input")
 const searchButton = document.getElementById("search-button")
 const themeToggle = document.getElementById("theme-toggle")
 
-export async function initApp() {
+async function initApp() {
   try {
-    loadTheme()
-    initPokemonDetailCard(pokemonDetailCard)
-
-    // Initialize Pokemon list with all required parameters
     await initializePokemonList(
       pokemonList,
       searchInput,
       searchButton,
       pokemonDetailCard
     )
-
+    initPokemonDetailCard(pokemonDetailCard)
+    loadTheme()
     themeToggle.addEventListener("click", toggleTheme)
   } catch (error) {
     console.error("Error initializing app:", error)
   }
 }
+
+document.addEventListener("DOMContentLoaded", initApp)
