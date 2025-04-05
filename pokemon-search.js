@@ -1,5 +1,11 @@
 import { fetchPokemonByNameOrId } from "./api.js"
-import { getPokemonList, renderPokemonList } from "./pokemon-list.js"
+import {
+  getPokemonList,
+  renderPokemonList,
+  showSearchError,
+  processFetchedPokemon,
+  showSearchingState,
+} from "./pokemon-list.js"
 
 let searchInput = null
 let searchButton = null
@@ -10,45 +16,23 @@ let searchButton = null
  * @param {HTMLElement} buttonElement - The search button element
  */
 export function initializeSearch(inputElement, buttonElement) {
-  searchInput = inputElement
-  searchButton = buttonElement
-
-  // Initialize search functionality
-  const searchCallback = () =>
-    handleSearch((term) =>
-      searchPokemonFromAPI(
-        term,
-        fetchPokemonByNameOrId,
-        () => processFetchedPokemon,
-        showSearchingState,
-        showSearchError
-      )
+  const searchCallback = handleSearch((term) =>
+    searchPokemonFromAPI(
+      term,
+      fetchPokemonByNameOrId,
+      () => processFetchedPokemon,
+      showSearchingState,
+      showSearchError
     )
-
-  // Set up event listeners
-  setupSearchEvents(searchCallback)
-}
-
-/**
- * Set up search-related event listeners
- * @param {Function} searchHandler - The function to handle search
- */
-function setupSearchEvents(searchHandler) {
-  // Search button click
-  searchButton.addEventListener("click", searchHandler)
-
-  // Search input enter key
+  )
+  searchButton = buttonElement
+  searchButton.addEventListener("click", searchCallback)
+  searchInput = inputElement
   searchInput.addEventListener("keyup", (event) => {
-    if (event.key === "Enter") {
-      searchHandler()
-    }
+    if (event.key === "Enter") searchCallback()
   })
-
-  // Reset search when input is cleared
   searchInput.addEventListener("input", () => {
-    if (searchInput.value.trim() === "") {
-      renderPokemonList(getPokemonList())
-    }
+    if (searchInput.value.trim() === "") renderPokemonList(getPokemonList())
   })
 }
 
@@ -59,23 +43,10 @@ function setupSearchEvents(searchHandler) {
  */
 function handleSearch(searchPokemonAPI, resetDetailViewFn) {
   const searchTerm = searchInput.value.trim()
-
-  // If search is empty, show all Pokémon
-  if (!searchTerm) {
-    renderPokemonList(getPokemonList())
-    return
-  }
-
-  // First try to filter from existing Pokémon
+  if (!searchTerm) return
   const filteredPokemon = filterPokemon(searchTerm)
-
-  if (filteredPokemon.length > 0) {
-    // Display matches from current list
-    renderPokemonList(filteredPokemon)
-  } else {
-    // Try to fetch from API if not found locally
-    searchPokemonAPI(searchTerm, resetDetailViewFn)
-  }
+  if (filteredPokemon.length > 0) renderPokemonList(filteredPokemon)
+  else searchPokemonAPI(searchTerm, resetDetailViewFn)
 }
 
 /**
