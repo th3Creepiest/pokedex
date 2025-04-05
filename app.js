@@ -3,9 +3,9 @@ import {
   fetchPokemonByNameOrId,
   fetchPokemonSpecies,
 } from "./api.js";
+import { loadTheme, toggleTheme } from "./theme.js";
 
 const POKEMON_COUNT = 50;
-const THEME_KEY = "pokedex-theme";
 
 // DOM Elements
 const pokemonList = document.getElementById("pokemon-list");
@@ -16,7 +16,6 @@ const themeToggle = document.getElementById("theme-toggle");
 
 // States
 let allPokemon = [];
-let currentTheme = "dark"; // Default theme is dark
 let selectedPokemonId = null;
 
 async function initApp() {
@@ -333,30 +332,6 @@ async function handleSearch() {
       `;
       selectedPokemonId = null;
     }
-  }
-}
-
-// Theme functions
-
-function loadTheme() {
-  const savedTheme = localStorage.getItem(THEME_KEY);
-  if (savedTheme) currentTheme = savedTheme;
-  applyTheme();
-}
-
-function toggleTheme() {
-  currentTheme = currentTheme === "dark" ? "light" : "dark";
-  localStorage.setItem(THEME_KEY, currentTheme);
-  applyTheme();
-}
-
-function applyTheme() {
-  if (currentTheme === "light") {
-    document.body.classList.add("light-theme");
-    themeToggle.querySelector(".theme-icon").textContent = "🌙";
-  } else {
-    document.body.classList.remove("light-theme");
-    themeToggle.querySelector(".theme-icon").textContent = "☀️";
   }
 }
 
