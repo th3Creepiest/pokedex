@@ -141,59 +141,6 @@ export function getBestPokemonSprite(pokemon) {
 }
 
 /**
- * Set up event listener for playing Pokémon cry
- * @param {string} pokemonName - Name of the Pokémon
- * @param {Function} [cryUrlGetter] - Function to get the URL for the Pokémon cry
- */
-export function setupPokemonCryPlayback(pokemonName, cryUrlGetter) {
-  const detailImage = pokemonDetailCard.querySelector(".detail-image")
-  detailImage.addEventListener("click", () => {
-    playPokemonCry(pokemonName, cryUrlGetter)
-  })
-}
-
-/**
- * Play the cry sound for a Pokémon
- * @param {string} pokemonName - Name of the Pokémon
- * @param {Function} cryUrlGetter - Function to get the URL for the Pokémon cry
- */
-async function playPokemonCry(pokemonName, cryUrlGetter) {
-  const soundUrl = cryUrlGetter(pokemonName)
-  const audio = new Audio()
-
-  try {
-    // Update UI to show sound is playing
-    updateSoundIconPlaying(true)
-
-    // Play the sound
-    audio.src = soundUrl
-    await audio.play()
-  } catch (error) {
-    console.error(`Failed to play sound for ${pokemonName}:`, error)
-  } finally {
-    // Reset UI after sound finishes (or fails)
-    setTimeout(() => updateSoundIconPlaying(false), 500)
-  }
-}
-
-/**
- * Update the sound icon to indicate playing state
- * @param {boolean} isPlaying - Whether sound is playing
- */
-function updateSoundIconPlaying(isPlaying) {
-  const soundIcon = document.querySelector(".sound-icon")
-  if (!soundIcon) return
-
-  if (isPlaying) {
-    soundIcon.textContent = "🔈"
-    soundIcon.style.animation = "pulse 0.5s infinite"
-  } else {
-    soundIcon.textContent = "🔊"
-    soundIcon.style.animation = ""
-  }
-}
-
-/**
  * Get the Pokémon's description from species data
  * @param {Object} speciesData - Pokémon species data
  * @returns {string} - Pokémon description

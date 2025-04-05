@@ -3,8 +3,9 @@ import {
   renderPokemonDetailCard,
   getPokemonDescription,
   getBestPokemonSprite,
-  setupPokemonCryPlayback,
 } from "./pokemon-card.js"
+
+import { setupPokemonCryPlayback } from "./pokemon-sound.js"
 
 import {
   fetchPokemonSpecies,
@@ -274,7 +275,8 @@ export async function showPokemonDetail(pokemon) {
     renderPokemonDetailCard(pokemon, description, spriteUrl, formattedId)
 
     // Set up sound playback
-    setupPokemonCryPlayback(pokemon.name, getPokemonCryUrl)
+    const detailCard = document.querySelector(".pokemon-detail-card")
+    setupPokemonCryPlayback(detailCard, pokemon.name, getPokemonCryUrl)
   } catch (error) {
     console.error(`Error showing details for ${pokemon.name}:`, error)
     showPokemonDetailError(pokemon.name)
