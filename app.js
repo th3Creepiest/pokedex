@@ -4,10 +4,10 @@
  */
 
 import { initTheme } from "./theme.js"
+import { initializeSearch } from "./pokemon-search.js"
 import { initializePokemonList } from "./pokemon-list.js"
 import { initPokemonDetailCard } from "./pokemon-card.js"
 
-// DOM Elements
 const pokemonList = document.getElementById("pokemon-list")
 const pokemonDetailCard = document.getElementById("pokemon-detail-card")
 const searchInput = document.getElementById("search-input")
@@ -17,13 +17,9 @@ const themeToggle = document.getElementById("theme-toggle")
 async function initApp() {
   try {
     initTheme(themeToggle)
-    initPokemonDetailCard(pokemonDetailCard)
-    await initializePokemonList(
-      pokemonList,
-      searchInput,
-      searchButton,
-      pokemonDetailCard
-    )
+    initializeSearch(searchInput, searchButton)
+    initPokemonDetailCard(pokemonDetailCard, pokemonDetailCard)
+    await initializePokemonList(pokemonList)
   } catch (error) {
     console.error("Error initializing app:", error)
   }

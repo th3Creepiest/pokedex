@@ -1,10 +1,4 @@
 import {
-  initializeSearch,
-  handleSearch,
-  searchPokemonFromAPI,
-} from "./pokemon-search.js"
-
-import {
   showPokemonDetailError,
   renderPokemonDetailCard,
   getPokemonDescription,
@@ -16,7 +10,6 @@ import {
   fetchPokemonSpecies,
   getPokemonCryUrl,
   fetchPokemonList,
-  fetchPokemonByNameOrId,
 } from "./api.js"
 
 const POKEMON_COUNT = 50 // Number of Pokémon to load initially
@@ -35,12 +28,7 @@ let onPokemonSelectCallback = null // Callback function when a Pokemon is select
  * @param {HTMLElement} buttonElement - The search button element
  * @param {HTMLElement} detailCardElement - The Pokemon detail card element
  */
-export async function initializePokemonList(
-  listElement,
-  inputElement,
-  buttonElement,
-  detailCardElement
-) {
+export async function initializePokemonList(listElement) {
   try {
     pokemonListElement = listElement
     onPokemonSelectCallback = showPokemonDetail
@@ -52,28 +40,6 @@ export async function initializePokemonList(
 
     // Render the list
     renderPokemonList(pokemonData)
-
-    // Initialize search functionality
-    const searchCallback = () =>
-      handleSearch(
-        (term) =>
-          searchPokemonFromAPI(
-            term,
-            fetchPokemonByNameOrId,
-            () => resetDetailView(detailCardElement),
-            processFetchedPokemon,
-            showSearchingState,
-            showSearchError
-          ),
-        () => resetDetailView(detailCardElement)
-      )
-
-    initializeSearch(
-      inputElement,
-      buttonElement,
-      searchCallback,
-      getPokemonCollection
-    )
   } catch (error) {
     console.error("Error initializing Pokemon list:", error)
     pokemonListElement.innerHTML = `<p class="error">Failed to load Pokémon. Please try again later.</p>`

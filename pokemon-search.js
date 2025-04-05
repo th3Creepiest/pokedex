@@ -1,4 +1,5 @@
-import { renderPokemonList } from "./pokemon-list.js"
+import { getPokemonCollection, renderPokemonList } from "./pokemon-list.js"
+import { fetchPokemonByNameOrId } from "./api.js"
 
 // DOM Elements
 let searchInput = null
@@ -11,18 +12,31 @@ let getPokemonCollectionFn = null // Function to get the Pokemon collection
  * Initialize the search functionality
  * @param {HTMLElement} inputElement - The search input element
  * @param {HTMLElement} buttonElement - The search button element
- * @param {Function} searchCallback - Callback function for search handling
- * @param {Function} getPokemonCollection - Function to get Pokemon collection
+ * @param {HTMLElement} detailCardElement - The Pokemon detail card element
  */
 export function initializeSearch(
   inputElement,
   buttonElement,
-  searchCallback,
-  getPokemonCollection
+  detailCardElement
 ) {
   searchInput = inputElement
   searchButton = buttonElement
   getPokemonCollectionFn = getPokemonCollection
+
+  // Initialize search functionality
+  const searchCallback = () =>
+    handleSearch(
+      (term) =>
+        searchPokemonFromAPI(
+          term,
+          fetchPokemonByNameOrId,
+          () => resetDetailView(detailCardElement),
+          processFetchedPokemon,
+          showSearchingState,
+          showSearchError
+        ),
+      () => resetDetailView(detailCardElement)
+    )
 
   // Set up event listeners
   setupSearchEvents(searchCallback)
