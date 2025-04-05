@@ -7,70 +7,71 @@ import {
 } from "./pokemon-list.js"
 import { fetchPokemonByNameOrId } from "./api.js"
 
-let searchInput = null
-let searchButton = null
+let searchInput
+let searchButton
 
 /**
  * Initialize the search functionality
- * @param {HTMLElement} inputElement - The search input element
- * @param {HTMLElement} buttonElement - The search button element
+ * @param {HTMLElement} inputElement - Search input element
+ * @param {HTMLElement} buttonElement - Search button element
  */
 export function initializeSearch(inputElement, buttonElement) {
-  const searchCallback = handleSearch((term) => searchPokemonFromAPI(term))
   searchInput = inputElement
   searchButton = buttonElement
-  searchButton.addEventListener("click", searchCallback)
-  searchInput.addEventListener("keyup", (event) => {
-    if (event.key === "Enter") searchCallback()
-  })
+
+  const handleSearch = async () => {
+    const term = searchInput.value.trim()
+    if (!term) return
+
+    const localResults = filterLocalPokemon(term)
+    if (localResults.length > 0) {
+      renderPokemonList(localResults)
+    } else {
+      try {
+        showSearchingStateOnList()
+        const pokemon = await fetchPokemonByNameOrId(term)
+        if (pokemon) processFetchedPokemon(pokemon)
+      } catch (error) {
+        showSearchErrorOnList(term)
+      }
+    }
+  }
+
+  searchInput.addEventListener(
+    "keyup",
+    (e) => e.key === "Enter" && handleSearch()
+  )
   searchInput.addEventListener("input", () => {
     if (searchInput.value.trim() === "") renderPokemonList(getPokemonList())
   })
+  searchButton.addEventListener("click", handleSearch)
 }
 
 /**
- * Handle search functionality
- * @param {Function} searchPokemonAPI - Function to search Pokemon from API
+ * Filters local Pokémon collection
+ * @param {string} searchTerm - Raw search input
+ * @returns {Pokemon[]}
  */
-function handleSearch(searchPokemonAPI) {
-  return () => {
-    const searchTerm = searchInput.value.trim()
-    if (!searchTerm) return
-    const filteredPokemon = filterPokemon(searchTerm)
-    if (filteredPokemon.length > 0) renderPokemonList(filteredPokemon)
-    else searchPokemonAPI(searchTerm)
-  }
-}
-
-/**
- * Search for a Pokémon from the API
- * @param {string} searchTerm - Term to search for
- */
-async function searchPokemonFromAPI(searchTerm) {
-  try {
-    showSearchingStateOnList()
-    const pokemon = await fetchPokemonByNameOrId(searchTerm)
-    if (pokemon) processFetchedPokemon(pokemon)
-  } catch (error) {
-    showSearchErrorOnList(searchTerm)
-  }
-}
-
-/**
- * Filter Pokémon list based on search term
- * @param {string} searchTerm - Term to search for
- * @returns {Array} - Filtered list of Pokémon
- */
-function filterPokemon(searchTerm) {
+function filterLocalPokemon(searchTerm) {
   if (!searchTerm) return getPokemonList()
   const normalizedTerm = searchTerm.toLowerCase()
-  return getPokemonList().filter((pokemon) => {
-    return (
-      matchesByName(pokemon, normalizedTerm) ||
-      matchesById(pokemon, normalizedTerm) ||
-      matchesByType(pokemon, normalizedTerm)
-    )
-  })
+  return getPokemonList().filter((pokemon) =>
+    hasAnyMatch(pokemon, normalizedTerm)
+  )
+}
+
+/**
+ * Checks all possible match conditions
+ * @param {Pokemon} pokemon - Pokémon to check
+ * @param {string} term - Normalized search term
+ * @returns {boolean}
+ */
+function hasAnyMatch(pokemon, term) {
+  return [
+    matchesByName(pokemon, term),
+    matchesById(pokemon, term),
+    matchesByType(pokemon, term),
+  ].some(Boolean)
 }
 
 /**
@@ -100,5 +101,5 @@ function matchesById(pokemon, term) {
  * @returns {boolean} - Whether it matches
  */
 function matchesByType(pokemon, term) {
-  return pokemon.types.some((type) => type.type.name.includes(term))
+  return pokemon.types.some(({ type }) => type.name.includes(term))
 }
