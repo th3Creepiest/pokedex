@@ -87,7 +87,7 @@ export function renderPokemonList(pokemonData) {
   }
 
   // Add each Pokémon to the list
-  addPokemonToList(pokemonData)
+  addPokemonToList2(pokemonData)
 
   // Maintain selection state if applicable
   updateSelectionState(pokemonData)
@@ -109,10 +109,20 @@ function showNoResultsMessage() {
 }
 
 /**
+ * Add a Pokémon to the collection if not already present
+ * @param {Object} pokemon - Pokémon to add
+ */
+function addPokemonToList1(pokemon) {
+  if (!allPokemon.some((p) => p.id === pokemon.id)) {
+    allPokemon.push(pokemon)
+  }
+}
+
+/**
  * Add Pokémon items to the list
  * @param {Array} pokemonData - Array of Pokémon objects
  */
-function addPokemonToList(pokemonData) {
+function addPokemonToList2(pokemonData) {
   pokemonData.forEach((pokemon) => {
     const listItem = createPokemonListItem(pokemon)
     pokemonListElement.appendChild(listItem)
@@ -231,19 +241,9 @@ function clearPreviousSelection() {
  * @param {Object} pokemon - Fetched Pokémon data
  */
 export function processFetchedPokemon(pokemon) {
-  addPokemonToList(pokemon)
+  addPokemonToList1(pokemon)
   renderPokemonList([pokemon])
   selectPokemonInList(pokemon.id)
-}
-
-/**
- * Add a Pokémon to the collection if not already present
- * @param {Object} pokemon - Pokémon to add
- */
-export function addPokemonToList(pokemon) {
-  if (!allPokemon.some((p) => p.id === pokemon.id)) {
-    allPokemon.push(pokemon)
-  }
 }
 
 /**
