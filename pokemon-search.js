@@ -8,29 +8,21 @@ let searchButton = null
  * Initialize the search functionality
  * @param {HTMLElement} inputElement - The search input element
  * @param {HTMLElement} buttonElement - The search button element
- * @param {HTMLElement} detailCardElement - The Pokemon detail card element
  */
-export function initializeSearch(
-  inputElement,
-  buttonElement,
-  detailCardElement
-) {
+export function initializeSearch(inputElement, buttonElement) {
   searchInput = inputElement
   searchButton = buttonElement
 
   // Initialize search functionality
   const searchCallback = () =>
-    handleSearch(
-      (term) =>
-        searchPokemonFromAPI(
-          term,
-          fetchPokemonByNameOrId,
-          () => resetDetailView(detailCardElement),
-          processFetchedPokemon,
-          showSearchingState,
-          showSearchError
-        ),
-      () => resetDetailView(detailCardElement)
+    handleSearch((term) =>
+      searchPokemonFromAPI(
+        term,
+        fetchPokemonByNameOrId,
+        () => processFetchedPokemon,
+        showSearchingState,
+        showSearchError
+      )
     )
 
   // Set up event listeners
@@ -41,7 +33,7 @@ export function initializeSearch(
  * Set up search-related event listeners
  * @param {Function} searchHandler - The function to handle search
  */
-export function setupSearchEvents(searchHandler) {
+function setupSearchEvents(searchHandler) {
   // Search button click
   searchButton.addEventListener("click", searchHandler)
 
@@ -65,7 +57,7 @@ export function setupSearchEvents(searchHandler) {
  * @param {Function} searchPokemonAPI - Function to search Pokemon from API
  * @param {Function} resetDetailViewFn - Function to reset detail view
  */
-export function handleSearch(searchPokemonAPI, resetDetailViewFn) {
+function handleSearch(searchPokemonAPI, resetDetailViewFn) {
   const searchTerm = searchInput.value.trim()
 
   // If search is empty, show all Pokémon
@@ -95,7 +87,7 @@ export function handleSearch(searchPokemonAPI, resetDetailViewFn) {
  * @param {Function} showSearchingStateFn - Function to show searching state
  * @param {Function} showSearchErrorFn - Function to show search error
  */
-export async function searchPokemonFromAPI(
+async function searchPokemonFromAPI(
   searchTerm,
   fetchPokemonByNameOrId,
   resetDetailViewFn,
@@ -127,7 +119,7 @@ export async function searchPokemonFromAPI(
  * @param {string} searchTerm - Term to search for
  * @returns {Array} - Filtered list of Pokémon
  */
-export function filterPokemon(searchTerm) {
+function filterPokemon(searchTerm) {
   if (!searchTerm) return getPokemonList()
   const normalizedTerm = searchTerm.toLowerCase()
 
