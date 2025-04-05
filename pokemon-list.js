@@ -57,7 +57,7 @@ export function getPokemonList() {
 /**
  * Display searching state in the UI
  */
-export function showSearchingState() {
+export function showSearchingStateOnList() {
   pokemonListElement.innerHTML =
     '<p class="loading">Searching for Pokémon...</p>'
 }
@@ -231,13 +231,8 @@ function clearPreviousSelection() {
  * @param {Object} pokemon - Fetched Pokémon data
  */
 export function processFetchedPokemon(pokemon) {
-  // Add to collection if not already there
-  addPokemonToCollection(pokemon)
-
-  // Display the Pokémon
+  addPokemonToList(pokemon)
   renderPokemonList([pokemon])
-
-  // Automatically select it
   selectPokemonInList(pokemon.id)
 }
 
@@ -245,7 +240,7 @@ export function processFetchedPokemon(pokemon) {
  * Add a Pokémon to the collection if not already present
  * @param {Object} pokemon - Pokémon to add
  */
-export function addPokemonToCollection(pokemon) {
+export function addPokemonToList(pokemon) {
   if (!allPokemon.some((p) => p.id === pokemon.id)) {
     allPokemon.push(pokemon)
   }
