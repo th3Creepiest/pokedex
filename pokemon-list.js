@@ -66,7 +66,7 @@ export function showSearchingState() {
  * Show search error in the UI
  * @param {string} searchTerm - The term that was searched
  */
-export function showSearchError(searchTerm) {
+export function showSearchErrorOnList(searchTerm) {
   pokemonListElement.innerHTML = `
     <p class="error">Pokémon "${searchTerm}" not found. Please try a different search.</p>
   `
