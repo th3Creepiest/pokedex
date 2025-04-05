@@ -20,7 +20,7 @@ export function initializeSearch(inputElement, buttonElement) {
     searchPokemonFromAPI(
       term,
       fetchPokemonByNameOrId,
-      () => processFetchedPokemon,
+      processFetchedPokemon,
       showSearchingState,
       showSearchError
     )
@@ -39,21 +39,19 @@ export function initializeSearch(inputElement, buttonElement) {
 /**
  * Handle search functionality
  * @param {Function} searchPokemonAPI - Function to search Pokemon from API
- * @param {Function} resetDetailViewFn - Function to reset detail view
  */
-function handleSearch(searchPokemonAPI, resetDetailViewFn) {
+function handleSearch(searchPokemonAPI) {
   const searchTerm = searchInput.value.trim()
   if (!searchTerm) return
   const filteredPokemon = filterPokemon(searchTerm)
   if (filteredPokemon.length > 0) renderPokemonList(filteredPokemon)
-  else searchPokemonAPI(searchTerm, resetDetailViewFn)
+  else searchPokemonAPI(searchTerm)
 }
 
 /**
  * Search for a Pokémon from the API
  * @param {string} searchTerm - Term to search for
  * @param {Function} fetchPokemonByNameOrId - Function to fetch Pokemon data
- * @param {Function} resetDetailViewFn - Function to reset detail view
  * @param {Function} processFetchedPokemonFn - Function to process fetched Pokemon
  * @param {Function} showSearchingStateFn - Function to show searching state
  * @param {Function} showSearchErrorFn - Function to show search error
@@ -61,27 +59,16 @@ function handleSearch(searchPokemonAPI, resetDetailViewFn) {
 async function searchPokemonFromAPI(
   searchTerm,
   fetchPokemonByNameOrId,
-  resetDetailViewFn,
   processFetchedPokemonFn,
   showSearchingStateFn,
   showSearchErrorFn
 ) {
   try {
-    // Show searching indicator
     showSearchingStateFn()
-
-    // Fetch Pokémon data
     const pokemon = await fetchPokemonByNameOrId(searchTerm)
-
-    // Process the found Pokémon
-    if (pokemon) {
-      processFetchedPokemonFn(pokemon)
-    }
+    if (pokemon) processFetchedPokemonFn(pokemon)
   } catch (error) {
-    // Handle search error
     showSearchErrorFn(searchTerm)
-    // Reset detail view
-    resetDetailViewFn()
   }
 }
 
