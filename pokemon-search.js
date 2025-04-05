@@ -1,11 +1,11 @@
-import { fetchPokemonByNameOrId } from "./api.js"
 import {
   getPokemonList,
   renderPokemonList,
-  showSearchError,
+  showSearchErrorOnList,
   processFetchedPokemon,
   showSearchingState,
 } from "./pokemon-list.js"
+import { fetchPokemonByNameOrId } from "./api.js"
 
 let searchInput = null
 let searchButton = null
@@ -16,15 +16,7 @@ let searchButton = null
  * @param {HTMLElement} buttonElement - The search button element
  */
 export function initializeSearch(inputElement, buttonElement) {
-  const searchCallback = handleSearch((term) =>
-    searchPokemonFromAPI(
-      term,
-      fetchPokemonByNameOrId,
-      processFetchedPokemon,
-      showSearchingState,
-      showSearchError
-    )
-  )
+  const searchCallback = handleSearch((term) => searchPokemonFromAPI(term))
   searchButton = buttonElement
   searchButton.addEventListener("click", searchCallback)
   searchInput = inputElement
@@ -42,10 +34,6 @@ export function initializeSearch(inputElement, buttonElement) {
  */
 function handleSearch(searchPokemonAPI) {
   return () => {
-    if (!searchInput) {
-      console.error("Search input element not initialized")
-      return
-    }
     const searchTerm = searchInput.value.trim()
     if (!searchTerm) return
     const filteredPokemon = filterPokemon(searchTerm)
@@ -57,24 +45,14 @@ function handleSearch(searchPokemonAPI) {
 /**
  * Search for a Pokémon from the API
  * @param {string} searchTerm - Term to search for
- * @param {Function} fetchPokemonByNameOrId - Function to fetch Pokemon data
- * @param {Function} processFetchedPokemonFn - Function to process fetched Pokemon
- * @param {Function} showSearchingStateFn - Function to show searching state
- * @param {Function} showSearchErrorFn - Function to show search error
  */
-async function searchPokemonFromAPI(
-  searchTerm,
-  fetchPokemonByNameOrId,
-  processFetchedPokemonFn,
-  showSearchingStateFn,
-  showSearchErrorFn
-) {
+async function searchPokemonFromAPI(searchTerm) {
   try {
-    showSearchingStateFn()
+    showSearchingState()
     const pokemon = await fetchPokemonByNameOrId(searchTerm)
-    if (pokemon) processFetchedPokemonFn(pokemon)
+    if (pokemon) processFetchedPokemon(pokemon)
   } catch (error) {
-    showSearchErrorFn(searchTerm)
+    showSearchErrorOnList(searchTerm)
   }
 }
 
@@ -87,7 +65,6 @@ function filterPokemon(searchTerm) {
   if (!searchTerm) return getPokemonList()
   const normalizedTerm = searchTerm.toLowerCase()
 
-  // Filter Pokémon that match any criteria
   return getPokemonList().filter((pokemon) => {
     return (
       matchesByName(pokemon, normalizedTerm) ||
