@@ -2,8 +2,8 @@ import {
   getPokemonList,
   renderPokemonList,
   showSearchErrorOnList,
+  showSearchingStateOnList,
   processFetchedPokemon,
-  showSearchingState,
 } from "./pokemon-list.js"
 import { fetchPokemonByNameOrId } from "./api.js"
 
@@ -17,9 +17,9 @@ let searchButton = null
  */
 export function initializeSearch(inputElement, buttonElement) {
   const searchCallback = handleSearch((term) => searchPokemonFromAPI(term))
+  searchInput = inputElement
   searchButton = buttonElement
   searchButton.addEventListener("click", searchCallback)
-  searchInput = inputElement
   searchInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") searchCallback()
   })
@@ -48,7 +48,7 @@ function handleSearch(searchPokemonAPI) {
  */
 async function searchPokemonFromAPI(searchTerm) {
   try {
-    showSearchingState()
+    showSearchingStateOnList()
     const pokemon = await fetchPokemonByNameOrId(searchTerm)
     if (pokemon) processFetchedPokemon(pokemon)
   } catch (error) {
@@ -64,7 +64,6 @@ async function searchPokemonFromAPI(searchTerm) {
 function filterPokemon(searchTerm) {
   if (!searchTerm) return getPokemonList()
   const normalizedTerm = searchTerm.toLowerCase()
-
   return getPokemonList().filter((pokemon) => {
     return (
       matchesByName(pokemon, normalizedTerm) ||
