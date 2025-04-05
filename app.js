@@ -3,7 +3,7 @@
  * A web application that displays information about Pokémon using the PokeAPI.
  */
 
-import { loadTheme, toggleTheme } from "./theme.js"
+import { initTheme } from "./theme.js"
 import { initializePokemonList } from "./pokemon-list.js"
 import { initPokemonDetailCard } from "./pokemon-card.js"
 
@@ -16,15 +16,14 @@ const themeToggle = document.getElementById("theme-toggle")
 
 async function initApp() {
   try {
+    initTheme(themeToggle)
+    initPokemonDetailCard(pokemonDetailCard)
     await initializePokemonList(
       pokemonList,
       searchInput,
       searchButton,
       pokemonDetailCard
     )
-    initPokemonDetailCard(pokemonDetailCard)
-    loadTheme()
-    themeToggle.addEventListener("click", toggleTheme)
   } catch (error) {
     console.error("Error initializing app:", error)
   }
