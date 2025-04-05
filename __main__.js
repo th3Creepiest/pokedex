@@ -1,3 +1,3 @@
-import { initApp } from "./app.js";
+import { initApp } from "./app.js"
 
-document.addEventListener("DOMContentLoaded", initApp);
+document.addEventListener("DOMContentLoaded", initApp)
