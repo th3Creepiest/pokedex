@@ -3,6 +3,8 @@
  * Handles the rendering and interaction with the Pokemon list in the UI
  */
 
+import { showPokemonDetailError } from "./pokemon-card.js"
+
 let pokemonListElement // Reference to the DOM element that displays Pokemon list
 let allPokemon = [] // Stores all loaded Pokémon data
 let selectedPokemonId = null // Currently selected Pokémon ID

@@ -20,11 +20,11 @@ import {
 import {
   initPokemonDetailCard,
   renderPokemonDetailCard,
+  getPokemonDescription,
   showPokemonDetailError,
   getBestPokemonSprite,
   setupPokemonCryPlayback,
-  getPokemonDescription,
-} from "./pokemon-detail-card.js"
+} from "./pokemon-card.js"
 import {
   fetchPokemonList,
   fetchPokemonByNameOrId,
