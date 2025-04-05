@@ -20,6 +20,7 @@ let pokemonListElement
 let searchInput = null
 let searchButton = null
 
+// State variables
 let allPokemon = [] // Stores all loaded Pokémon data
 let selectedPokemonId = null // Currently selected Pokémon ID
 let onPokemonSelectCallback = null // Callback function when a Pokemon is selected
@@ -42,13 +43,25 @@ export async function initializePokemonList(
     searchButton = buttonElement
     onPokemonSelectCallback = showPokemonDetail
     pokemonListElement.innerHTML = '<p class="loading">Loading Pokémon...</p>'
+
     // Fetch initial Pokémon data
     const pokemonData = await fetchPokemonList(POKEMON_COUNT)
     allPokemon = pokemonData
+
     // Render the list
     renderPokemonList(pokemonData)
+
     // Set up event listeners
-    setupEventListeners(detailCardElement, fetchPokemonByNameOrId)
+    const searchHandler = () =>
+      handleSearch(
+        (term) =>
+          searchPokemonFromAPI(term, fetchPokemonByNameOrId, () =>
+            resetDetailView(detailCardElement)
+          ),
+        () => resetDetailView(detailCardElement)
+      )
+
+    setupSearchEvents(searchHandler)
   } catch (error) {
     console.error("Error initializing Pokemon list:", error)
     pokemonListElement.innerHTML = `<p class="error">Failed to load Pokémon. Please try again later.</p>`
@@ -438,26 +451,4 @@ export async function searchPokemonFromAPI(
     // Reset detail view
     resetDetailViewFn()
   }
-}
-
-/**
- * Set up all event listeners for the Pokemon list functionality
- * @param {HTMLElement} detailCardElement - The Pokemon detail card element
- * @param {Function} fetchPokemonByNameOrIdFn - Function to fetch Pokemon by name or ID
- */
-export function setupEventListeners(
-  detailCardElement,
-  fetchPokemonByNameOrIdFn
-) {
-  // Create search handler function
-  const searchHandler = () =>
-    handleSearch(
-      (term) =>
-        searchPokemonFromAPI(term, fetchPokemonByNameOrIdFn, () =>
-          resetDetailView(detailCardElement)
-        ),
-      () => resetDetailView(detailCardElement)
-    )
-
-  setupSearchEvents(searchHandler)
 }
