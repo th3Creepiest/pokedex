@@ -4,33 +4,21 @@
  */
 
 import { loadTheme, toggleTheme } from "./theme.js"
+import { initPokemonDetailCard } from "./pokemon-card.js"
+import { fetchPokemonList, fetchPokemonByNameOrId } from "./api.js"
 import {
   initPokemonList,
   setPokemonCollection,
   showPokemonListLoadingState,
   showPokemonListErrorState,
   renderPokemonList,
-  formatPokemonId,
   resetDetailView,
   initSearchElements,
   setupSearchEvents,
   handleSearch,
   searchPokemonFromAPI,
+  showPokemonDetail,
 } from "./pokemon-list.js"
-import {
-  initPokemonDetailCard,
-  renderPokemonDetailCard,
-  getPokemonDescription,
-  showPokemonDetailError,
-  getBestPokemonSprite,
-  setupPokemonCryPlayback,
-} from "./pokemon-card.js"
-import {
-  fetchPokemonList,
-  fetchPokemonByNameOrId,
-  fetchPokemonSpecies,
-  getPokemonCryUrl,
-} from "./api.js"
 
 const POKEMON_COUNT = 50 // Number of Pokémon to load initially
 
@@ -46,6 +34,7 @@ export async function initApp() {
     loadTheme()
     initPokemonDetailCard(pokemonDetailCard)
     initPokemonList(pokemonList, showPokemonDetail)
+
     showPokemonListLoadingState()
 
     // Fetch initial Pokémon data
@@ -61,31 +50,6 @@ export async function initApp() {
   }
 }
 
-/**
- * Display detailed information about a Pokémon
- * @param {Object} pokemon - Pokémon data object
- */
-async function showPokemonDetail(pokemon) {
-  try {
-    // Fetch additional species data
-    const speciesData = await fetchPokemonSpecies(pokemon.species.url)
-    const description = getPokemonDescription(speciesData)
-    const spriteUrl = getBestPokemonSprite(pokemon)
-    const formattedId = formatPokemonId(pokemon.id)
-
-    renderPokemonDetailCard(pokemon, description, spriteUrl, formattedId)
-
-    // Set up sound playback
-    setupPokemonCryPlayback(pokemon.name, getPokemonCryUrl)
-  } catch (error) {
-    console.error(`Error showing details for ${pokemon.name}:`, error)
-    showPokemonDetailError(pokemon.name)
-  }
-}
-
-/**
- * Set up all event listeners for the application
- */
 function setupEventListeners() {
   // Initialize search elements
   initSearchElements(searchInput, searchButton)
@@ -100,9 +64,6 @@ function setupEventListeners() {
       () => resetDetailView(pokemonDetailCard)
     )
 
-  // Setup search events
   setupSearchEvents(searchHandler)
-
-  // Setup theme toggle
   themeToggle.addEventListener("click", toggleTheme)
 }

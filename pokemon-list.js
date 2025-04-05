@@ -3,7 +3,14 @@
  * Handles the rendering and interaction with the Pokemon list in the UI
  */
 
-import { showPokemonDetailError } from "./pokemon-card.js"
+import {
+  showPokemonDetailError,
+  renderPokemonDetailCard,
+  getPokemonDescription,
+  getBestPokemonSprite,
+  setupPokemonCryPlayback,
+} from "./pokemon-card.js"
+import { fetchPokemonSpecies, getPokemonCryUrl } from "./api.js"
 
 let pokemonListElement // Reference to the DOM element that displays Pokemon list
 let allPokemon = [] // Stores all loaded Pokémon data
@@ -312,6 +319,28 @@ export function selectPokemonInList(pokemonId) {
   )
   if (listItem) {
     listItem.click()
+  }
+}
+
+/**
+ * Display detailed information about a Pokémon
+ * @param {Object} pokemon - Pokémon data object
+ */
+export async function showPokemonDetail(pokemon) {
+  try {
+    // Fetch additional species data
+    const speciesData = await fetchPokemonSpecies(pokemon.species.url)
+    const description = getPokemonDescription(speciesData)
+    const spriteUrl = getBestPokemonSprite(pokemon)
+    const formattedId = formatPokemonId(pokemon.id)
+
+    renderPokemonDetailCard(pokemon, description, spriteUrl, formattedId)
+
+    // Set up sound playback
+    setupPokemonCryPlayback(pokemon.name, getPokemonCryUrl)
+  } catch (error) {
+    console.error(`Error showing details for ${pokemon.name}:`, error)
+    showPokemonDetailError(pokemon.name)
   }
 }
 
