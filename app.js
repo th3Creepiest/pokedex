@@ -20,7 +20,7 @@ async function initApp() {
     initTheme(themeToggle)
     initSound(pokemonDetailCard)
     initializeSearch(searchInput, searchButton)
-    initPokemonDetailCard(pokemonDetailCard, pokemonDetailCard)
+    initPokemonDetailCard(pokemonDetailCard)
     await initializePokemonList(pokemonList)
   } catch (error) {
     console.error("Error initializing app:", error)
