@@ -3,19 +3,15 @@ import { renderPokemonDetailCard } from "./pokemon-card.js"
 
 const POKEMON_COUNT = 50 // Number of Pokémon to load initially
 
-// DOM Elements
-let pokemonListElement
-
-// State variables
+// Module state variables
+let pokemonListElement // DOM Element for the list container
 let allPokemon = [] // Stores all loaded Pokémon data
 let selectedPokemonId = null // Currently selected Pokémon ID
 let onPokemonSelectCallback = null // Callback function when a Pokemon is selected
 
 /**
+ * Initialize the Pokemon list component
  * @param {HTMLElement} listElement - The DOM element to render Pokemon list into
- * @param {HTMLElement} inputElement - The search input element
- * @param {HTMLElement} buttonElement - The search button element
- * @param {HTMLElement} detailCardElement - The Pokemon detail card element
  */
 export async function initializePokemonList(listElement) {
   try {
@@ -76,7 +72,7 @@ export function renderPokemonList(pokemonData) {
   }
 
   // Add each Pokémon to the list
-  addPokemonToList2(pokemonData)
+  renderPokemonItems(pokemonData)
 
   // Maintain selection state if applicable
   updateSelectionState(pokemonData)
@@ -101,17 +97,17 @@ function showNoResultsMessage() {
  * Add a Pokémon to the collection if not already present
  * @param {Object} pokemon - Pokémon to add
  */
-function addPokemonToList1(pokemon) {
+function addPokemonToCollection(pokemon) {
   if (!allPokemon.some((p) => p.id === pokemon.id)) {
     allPokemon.push(pokemon)
   }
 }
 
 /**
- * Add Pokémon items to the list
+ * Render Pokémon items to the list
  * @param {Array} pokemonData - Array of Pokémon objects
  */
-function addPokemonToList2(pokemonData) {
+function renderPokemonItems(pokemonData) {
   pokemonData.forEach((pokemon) => {
     const listItem = createPokemonListItem(pokemon)
     pokemonListElement.appendChild(listItem)
@@ -125,10 +121,8 @@ function addPokemonToList2(pokemonData) {
 function updateSelectionState(pokemonData) {
   if (!selectedPokemonId) return
 
-  const selectedPokemon = pokemonData.find((p) => p.id === selectedPokemonId)
-
-  if (selectedPokemon) {
-    // Highlight the selected Pokémon in the list
+  // Only proceed if the selected Pokémon exists in the current data
+  if (pokemonData.some((p) => p.id === selectedPokemonId)) {
     highlightSelectedPokemon()
   }
 }
@@ -163,10 +157,8 @@ function createPokemonListItem(pokemon) {
   listItem.className = "pokemon-list-item"
   listItem.dataset.id = pokemon.id
 
-  // Get sprite image URL
+  // Get sprite image URL and format ID with leading zeros
   const spriteUrl = pokemon.sprites.front_default
-
-  // Format Pokémon ID with leading zeros
   const formattedId = pokemon.id.toString().padStart(3, "0")
 
   // Create list item content
@@ -192,10 +184,10 @@ function createPokemonListItem(pokemon) {
  * @param {HTMLElement} listItem - The clicked list item element
  */
 function handlePokemonSelection(pokemon, listItem) {
-  // Clear previous selection
-  clearPreviousSelection()
-
-  // Highlight selected item
+  // Clear previous selection and highlight the new one
+  document.querySelectorAll(".pokemon-list-item").forEach((item) => {
+    item.classList.remove("active")
+  })
   listItem.classList.add("active")
 
   // Update selected Pokémon ID
@@ -208,20 +200,11 @@ function handlePokemonSelection(pokemon, listItem) {
 }
 
 /**
- * Clear previous Pokémon selection
- */
-function clearPreviousSelection() {
-  document.querySelectorAll(".pokemon-list-item").forEach((item) => {
-    item.classList.remove("active")
-  })
-}
-
-/**
  * Process a Pokémon fetched from the API
  * @param {Object} pokemon - Fetched Pokémon data
  */
 export function processFetchedPokemon(pokemon) {
-  addPokemonToList1(pokemon)
+  addPokemonToCollection(pokemon)
   renderPokemonList([pokemon])
   selectPokemonInList(pokemon.id)
 }
@@ -243,12 +226,13 @@ export function selectPokemonInList(pokemonId) {
  * Display detailed information about a Pokémon
  * @param {Object} pokemon - Pokémon data object
  */
-export async function showPokemonDetail(pokemon) {
+export function showPokemonDetail(pokemon) {
   renderPokemonDetailCard(pokemon)
 }
 
 /**
  * Reset the detail view to empty state
+ * @param {HTMLElement} detailCardElement - The detail card element to reset
  */
 export function resetDetailView(detailCardElement) {
   detailCardElement.innerHTML = `
