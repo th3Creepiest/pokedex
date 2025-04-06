@@ -3,10 +3,11 @@ import { getPokemonCryUrl } from "./api.js"
 let pokemonDetailCard
 
 /**
- * @param {HTMLElement} detailCardElement
+ * Initialize sound functionality
+ * @param {HTMLElement} pokemonDetailCardElement - Reference to the detail card element
  */
-export function initSound(detailCardElement) {
-  pokemonDetailCard = detailCardElement
+export function initSound(pokemonDetailCardElement) {
+  pokemonDetailCard = pokemonDetailCardElement
 }
 
 /**
