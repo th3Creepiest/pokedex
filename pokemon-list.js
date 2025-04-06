@@ -2,19 +2,13 @@ import { fetchPokemonList } from "./api.js"
 import { renderPokemonDetailCard } from "./pokemon-card.js"
 
 const POKEMON_COUNT = 15 // Number of Pokémon to load initially
+const pokemonListElement = document.getElementById("pokemon-list")
 
-// Module state variables
-let pokemonListElement // DOM Element for the list container
 let allPokemon = [] // Stores all loaded Pokémon data
 let selectedPokemonId = null // Currently selected Pokémon ID
 
-/**
- * Initialize the Pokemon list component
- * @param {HTMLElement} listElement - The DOM element to render Pokemon list into
- */
-export async function initializePokemonList(listElement) {
+export async function initializePokemonList() {
   try {
-    pokemonListElement = listElement
     pokemonListElement.innerHTML = '<p class="loading">Loading Pokémon...</p>'
     allPokemon = await fetchPokemonList(POKEMON_COUNT)
     renderPokemonList(allPokemon)
