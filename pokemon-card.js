@@ -46,7 +46,7 @@ export async function renderPokemonDetailCard(pokemon) {
  * @param {Object} pokemon - Pokémon data
  * @returns {string} - URL of the best available sprite
  */
-export function getBestPokemonSprite(pokemon) {
+function getBestPokemonSprite(pokemon) {
   // Try to get animated sprite first, fall back to static sprite
   return (
     pokemon.sprites.versions?.["generation-v"]?.["black-white"]?.animated
@@ -59,7 +59,7 @@ export function getBestPokemonSprite(pokemon) {
  * @param {Object} speciesData - Pokémon species data
  * @returns {string} - Pokémon description
  */
-export function getPokemonDescription(speciesData) {
+function getPokemonDescription(speciesData) {
   const englishEntry = speciesData.flavor_text_entries.find(
     (entry) => entry.language.name === "en"
   )
@@ -73,7 +73,7 @@ export function getPokemonDescription(speciesData) {
  * @param {string} pokemonName - Name of the Pokémon
  * @param {string} errorMessage - Optional specific error message
  */
-export function showPokemonDetailError(pokemonName, errorMessage = "") {
+function showPokemonDetailError(pokemonName, errorMessage = "") {
   const errorText = errorMessage
     ? `Error: ${errorMessage}`
     : "Failed to load details. Please try again."
