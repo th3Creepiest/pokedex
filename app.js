@@ -4,7 +4,6 @@
  */
 
 import { initTheme } from "./theme.js"
-import { initSound } from "./pokemon-sound.js"
 import { initializeSearch } from "./pokemon-search.js"
 import { initializePokemonList } from "./pokemon-list.js"
 import { initPokemonDetailCard } from "./pokemon-card.js"
@@ -18,7 +17,6 @@ const themeToggle = document.getElementById("theme-toggle")
 async function initApp() {
   try {
     initTheme(themeToggle)
-    initSound(pokemonDetailCard)
     initializeSearch(searchInput, searchButton)
     initPokemonDetailCard(pokemonDetailCard)
     await initializePokemonList(pokemonList)
