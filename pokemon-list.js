@@ -1,20 +1,65 @@
 import { fetchPokemonList } from "./api.js"
 import { renderPokemonDetailCard } from "./pokemon-card.js"
 
-const POKEMON_COUNT = 15 // Number of Pokémon to load initially
+const POKEMON_COUNT = 25 // Number of Pokémon to load initially
 const pokemonListElement = document.getElementById("pokemon-list")
 
-let allPokemon = [] // Stores all loaded Pokémon data
-let selectedPokemonId = null // Currently selected Pokémon ID
+let allPokemon = []
+let selectedPokemonId = null
 
 export async function initializePokemonList() {
+  pokemonListElement.innerHTML = '<p class="loading">Loading Pokémon...</p>'
   try {
-    pokemonListElement.innerHTML = '<p class="loading">Loading Pokémon...</p>'
-    allPokemon = await fetchPokemonList(POKEMON_COUNT)
+    const cachedPokemon = loadPokemonFromLocalStorage()
+    if (cachedPokemon && cachedPokemon.length > 0) {
+      allPokemon = cachedPokemon
+      console.log("Loaded Pokémon data from local storage")
+    } else {
+      allPokemon = await fetchPokemonList(POKEMON_COUNT)
+      savePokemonToLocalStorage(allPokemon)
+    }
     renderPokemonList(allPokemon)
   } catch (error) {
     console.error("Error initializing Pokemon list:", error)
     pokemonListElement.innerHTML = `<p class="error">Failed to load Pokémon. Please try again later.</p>`
+  }
+}
+
+/**
+ * Save Pokemon data to localStorage
+ * @param {Array} pokemonData - Array of Pokemon objects to save
+ */
+function savePokemonToLocalStorage(pokemonData) {
+  try {
+    localStorage.setItem("cachedPokemon", JSON.stringify(pokemonData))
+    localStorage.setItem("pokemonCacheTimestamp", Date.now().toString())
+    console.log("Saved Pokémon data to local storage")
+  } catch (error) {
+    console.error("Error saving Pokémon to localStorage:", error)
+  }
+}
+
+/**
+ * Load Pokemon data from localStorage
+ * @returns {Array|null} - Array of Pokemon objects or null if no valid cache
+ */
+function loadPokemonFromLocalStorage() {
+  try {
+    const cachedData = localStorage.getItem("cachedPokemon")
+    const cacheTimestamp = localStorage.getItem("pokemonCacheTimestamp")
+
+    // Check if cache exists and is not too old (24 hours)
+    const CACHE_MAX_AGE = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+    const isValidCache =
+      cacheTimestamp && Date.now() - parseInt(cacheTimestamp) < CACHE_MAX_AGE
+
+    if (cachedData && isValidCache) {
+      return JSON.parse(cachedData)
+    }
+    return null
+  } catch (error) {
+    console.error("Error loading Pokémon from localStorage:", error)
+    return null
   }
 }
 
@@ -116,6 +161,10 @@ function handlePokemonSelection(pokemon, listItem) {
  * @param {Object} pokemon - Fetched Pokémon data
  */
 export function processFetchedPokemon(pokemon) {
-  if (!allPokemon.some((p) => p.id === pokemon.id)) allPokemon.push(pokemon)
+  if (!allPokemon.some((p) => p.id === pokemon.id)) {
+    allPokemon.push(pokemon)
+    // Update localStorage with the new Pokémon added
+    savePokemonToLocalStorage(allPokemon)
+  }
   renderPokemonList([pokemon])
 }
