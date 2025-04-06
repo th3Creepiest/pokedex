@@ -1,3 +1,6 @@
+import { fetchPokemonSpecies } from "./api.js"
+import { setupPokemonCryPlayback } from "./pokemon-sound.js"
+
 let pokemonDetailCard
 
 /**
@@ -11,11 +14,13 @@ export function initPokemonDetailCard(detailCardElement) {
 /**
  * Render the Pokémon detail card with all information
  * @param {Object} pokemon - Pokémon data
- * @param {string} description - Pokémon description
- * @param {string} spriteUrl - URL of Pokémon sprite
  */
-export function renderPokemonDetailCard(pokemon, description, spriteUrl) {
-  pokemonDetailCard.innerHTML = `
+export async function renderPokemonDetailCard(pokemon) {
+  try {
+    const speciesData = await fetchPokemonSpecies(pokemon.species.url)
+    const description = getPokemonDescription(speciesData)
+    const spriteUrl = getBestPokemonSprite(pokemon)
+    pokemonDetailCard.innerHTML = `
     <div class="detail-header">
       <h2>${pokemon.name}</h2>
       <span class="pokemon-id">#${pokemon.id.toString().padStart(3, "0")}</span>
@@ -35,6 +40,11 @@ export function renderPokemonDetailCard(pokemon, description, spriteUrl) {
       </div>
     </div>
   `
+    setupPokemonCryPlayback(pokemon.name)
+  } catch (error) {
+    console.error(`Error showing details for ${pokemon.name}:`, error)
+    showPokemonDetailError(pokemon.name)
+  }
 }
 
 /**

@@ -1,11 +1,5 @@
-import { fetchPokemonSpecies, fetchPokemonList } from "./api.js"
-import { setupPokemonCryPlayback } from "./pokemon-sound.js"
-import {
-  renderPokemonDetailCard,
-  showPokemonDetailError,
-  getPokemonDescription,
-  getBestPokemonSprite,
-} from "./pokemon-card.js"
+import { fetchPokemonList } from "./api.js"
+import { renderPokemonDetailCard } from "./pokemon-card.js"
 
 const POKEMON_COUNT = 50 // Number of Pokémon to load initially
 
@@ -250,16 +244,7 @@ export function selectPokemonInList(pokemonId) {
  * @param {Object} pokemon - Pokémon data object
  */
 export async function showPokemonDetail(pokemon) {
-  try {
-    const speciesData = await fetchPokemonSpecies(pokemon.species.url)
-    const description = getPokemonDescription(speciesData)
-    const spriteUrl = getBestPokemonSprite(pokemon)
-    renderPokemonDetailCard(pokemon, description, spriteUrl)
-    setupPokemonCryPlayback(pokemon.name)
-  } catch (error) {
-    console.error(`Error showing details for ${pokemon.name}:`, error)
-    showPokemonDetailError(pokemon.name)
-  }
+  renderPokemonDetailCard(pokemon)
 }
 
 /**
