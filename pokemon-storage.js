@@ -1,6 +1,6 @@
 /**
- * Pokemon Storage Module
- * Handles localStorage operations for caching Pokemon data
+ * Storage Module
+ * Handles localStorage operations for caching Pokemon data and theme preferences
  */
 
 /**
@@ -37,6 +37,31 @@ export function loadPokemonFromLocalStorage() {
     return null
   } catch (error) {
     console.error("Error loading Pokémon from localStorage:", error)
+    return null
+  }
+}
+
+/**
+ * Save theme preference to localStorage
+ * @param {string} theme - The theme preference ('dark' or 'light')
+ */
+export function saveTheme(theme) {
+  try {
+    localStorage.setItem("pokedex-theme", theme)
+  } catch (error) {
+    console.error("Error saving theme to localStorage:", error)
+  }
+}
+
+/**
+ * Load theme preference from localStorage
+ * @returns {string|null} - The saved theme preference or null if not found
+ */
+export function loadTheme() {
+  try {
+    return localStorage.getItem("pokedex-theme")
+  } catch (error) {
+    console.error("Error loading theme from localStorage:", error)
     return null
   }
 }
