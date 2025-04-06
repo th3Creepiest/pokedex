@@ -1,5 +1,9 @@
 import { fetchPokemonList } from "./api.js"
 import { renderPokemonDetailCard } from "./pokemon-card.js"
+import {
+  savePokemonToLocalStorage,
+  loadPokemonFromLocalStorage,
+} from "./pokemon-storage.js"
 
 const POKEMON_COUNT = 25 // Number of Pokémon to load initially
 const pokemonListElement = document.getElementById("pokemon-list")
@@ -22,44 +26,6 @@ export async function initializePokemonList() {
   } catch (error) {
     console.error("Error initializing Pokemon list:", error)
     pokemonListElement.innerHTML = `<p class="error">Failed to load Pokémon. Please try again later.</p>`
-  }
-}
-
-/**
- * Save Pokemon data to localStorage
- * @param {Array} pokemonData - Array of Pokemon objects to save
- */
-function savePokemonToLocalStorage(pokemonData) {
-  try {
-    localStorage.setItem("cachedPokemon", JSON.stringify(pokemonData))
-    localStorage.setItem("pokemonCacheTimestamp", Date.now().toString())
-    console.log("Saved Pokémon data to local storage")
-  } catch (error) {
-    console.error("Error saving Pokémon to localStorage:", error)
-  }
-}
-
-/**
- * Load Pokemon data from localStorage
- * @returns {Array|null} - Array of Pokemon objects or null if no valid cache
- */
-function loadPokemonFromLocalStorage() {
-  try {
-    const cachedData = localStorage.getItem("cachedPokemon")
-    const cacheTimestamp = localStorage.getItem("pokemonCacheTimestamp")
-
-    // Check if cache exists and is not too old (24 hours)
-    const CACHE_MAX_AGE = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
-    const isValidCache =
-      cacheTimestamp && Date.now() - parseInt(cacheTimestamp) < CACHE_MAX_AGE
-
-    if (cachedData && isValidCache) {
-      return JSON.parse(cachedData)
-    }
-    return null
-  } catch (error) {
-    console.error("Error loading Pokémon from localStorage:", error)
-    return null
   }
 }
 
