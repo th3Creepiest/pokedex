@@ -2,12 +2,10 @@ const THEME_KEY = "pokedex-theme"
 
 let currentTheme = "dark"
 
-/**
- * @param {HTMLElement} themeToggle
- * */
-export function initTheme(themeToggle) {
+export function initTheme() {
   const savedTheme = localStorage.getItem(THEME_KEY)
   if (savedTheme) currentTheme = savedTheme
+  const themeToggle = document.getElementById("theme-toggle")
   themeToggle.addEventListener("click", toggleTheme)
   applyTheme()
 }

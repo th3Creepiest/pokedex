@@ -12,11 +12,10 @@ const pokemonList = document.getElementById("pokemon-list")
 const pokemonDetailCard = document.getElementById("pokemon-detail-card")
 const searchInput = document.getElementById("search-input")
 const searchButton = document.getElementById("search-button")
-const themeToggle = document.getElementById("theme-toggle")
 
 async function initApp() {
   try {
-    initTheme(themeToggle)
+    initTheme()
     initializeSearch(searchInput, searchButton)
     initPokemonDetailCard(pokemonDetailCard)
     await initializePokemonList(pokemonList)
