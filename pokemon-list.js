@@ -55,79 +55,26 @@ export function showSearchErrorOnList(searchTerm) {
  * @param {Array} pokemonData - Array of Pokémon objects to display
  */
 export function renderPokemonList(pokemonData) {
-  // Clear the current list
-  clearPokemonList()
+  pokemonListElement.innerHTML = ""
 
-  // Show message if no Pokémon found
   if (pokemonData.length === 0) {
-    showNoResultsMessage()
+    pokemonListElement.innerHTML =
+      '<p class="no-results">No Pokémon found. Try a different search.</p>'
     return
   }
 
   // Add each Pokémon to the list
-  renderPokemonItems(pokemonData)
-
-  // Maintain selection state if applicable
-  updateSelectionState(pokemonData)
-}
-
-/**
- * Clear the Pokémon list container
- */
-function clearPokemonList() {
-  pokemonListElement.innerHTML = ""
-}
-
-/**
- * Display a message when no Pokémon are found
- */
-function showNoResultsMessage() {
-  pokemonListElement.innerHTML =
-    '<p class="no-results">No Pokémon found. Try a different search.</p>'
-}
-
-/**
- * Add a Pokémon to the collection if not already present
- * @param {Object} pokemon - Pokémon to add
- */
-function addPokemonToCollection(pokemon) {
-  if (!allPokemon.some((p) => p.id === pokemon.id)) {
-    allPokemon.push(pokemon)
-  }
-}
-
-/**
- * Render Pokémon items to the list
- * @param {Array} pokemonData - Array of Pokémon objects
- */
-function renderPokemonItems(pokemonData) {
   pokemonData.forEach((pokemon) => {
     const listItem = createPokemonListItem(pokemon)
     pokemonListElement.appendChild(listItem)
   })
-}
 
-/**
- * Update the selection state in the UI
- * @param {Array} pokemonData - Current list of Pokémon
- */
-function updateSelectionState(pokemonData) {
+  // Maintain selection state if applicable
   if (!selectedPokemonId) return
-
-  // Only proceed if the selected Pokémon exists in the current data
   if (pokemonData.some((p) => p.id === selectedPokemonId)) {
-    highlightSelectedPokemon()
-  }
-}
-
-/**
- * Highlight the selected Pokémon in the list
- */
-function highlightSelectedPokemon() {
-  const listItem = document.querySelector(
-    `.pokemon-list-item[data-id="${selectedPokemonId}"]`
-  )
-  if (listItem) {
+    const listItem = document.querySelector(
+      `.pokemon-list-item[data-id="${selectedPokemonId}"]`
+    )
     listItem.classList.add("active")
   }
 }
@@ -138,16 +85,11 @@ function highlightSelectedPokemon() {
  * @returns {HTMLElement} - The created list item element
  */
 function createPokemonListItem(pokemon) {
-  // Create container element
+  const spriteUrl = pokemon.sprites.front_default
+  const formattedId = pokemon.id.toString().padStart(3, "0")
   const listItem = document.createElement("div")
   listItem.className = "pokemon-list-item"
   listItem.dataset.id = pokemon.id
-
-  // Get sprite image URL and format ID with leading zeros
-  const spriteUrl = pokemon.sprites.front_default
-  const formattedId = pokemon.id.toString().padStart(3, "0")
-
-  // Create list item content
   listItem.innerHTML = `
     <img src="${spriteUrl}" alt="${pokemon.name}">
     <div class="pokemon-list-item-info">
@@ -155,12 +97,9 @@ function createPokemonListItem(pokemon) {
       <span class="pokemon-id">#${formattedId}</span>
     </div>
   `
-
-  // Add click event handler
   listItem.addEventListener("click", () =>
     handlePokemonSelection(pokemon, listItem)
   )
-
   return listItem
 }
 
@@ -183,20 +122,6 @@ function handlePokemonSelection(pokemon, listItem) {
  * @param {Object} pokemon - Fetched Pokémon data
  */
 export function processFetchedPokemon(pokemon) {
-  addPokemonToCollection(pokemon)
+  if (!allPokemon.some((p) => p.id === pokemon.id)) allPokemon.push(pokemon)
   renderPokemonList([pokemon])
-  selectPokemonInList(pokemon.id)
-}
-
-/**
- * Select a Pokémon in the list by ID
- * @param {number} pokemonId - ID of the Pokémon to select
- */
-function selectPokemonInList(pokemonId) {
-  const listItem = document.querySelector(
-    `.pokemon-list-item[data-id="${pokemonId}"]`
-  )
-  if (listItem) {
-    listItem.click()
-  }
 }
