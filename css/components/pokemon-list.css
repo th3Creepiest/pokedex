@@ -1,0 +1,67 @@
+/* Pokemon List Styles */
+.pokemon-list-container {
+  flex: 1;
+  max-width: 300px;
+  background-color: var(--card-bg-color);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.pokemon-list-container h2 {
+  padding: 15px;
+  background-color: var(--card-header-bg);
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.pokemon-list {
+  height: calc(100% - 60px);
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+}
+
+.pokemon-list-item {
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+  gap: 15px;
+}
+
+.pokemon-list-item:hover {
+  background-color: var(--list-item-hover);
+  transform: translateX(5px);
+}
+
+.pokemon-list-item.active {
+  background-color: var(--list-item-active);
+  border-left: 4px solid var(--header-bg-color);
+}
+
+.pokemon-list-item img {
+  width: 50px;
+  height: 50px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.pokemon-list-item-info {
+  flex: 1;
+}
+
+.pokemon-list-item h3 {
+  font-size: 1rem;
+  text-transform: capitalize;
+  margin-bottom: 3px;
+}
+
+.pokemon-list-item .pokemon-id {
+  font-size: 0.8rem;
+  color: var(--secondary-text-color);
+}
