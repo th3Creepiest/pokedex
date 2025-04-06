@@ -163,8 +163,6 @@ function handlePokemonSelection(pokemon, listItem) {
 export function processFetchedPokemon(pokemon) {
   if (!allPokemon.some((p) => p.id === pokemon.id)) {
     allPokemon.push(pokemon)
-    // Update localStorage with the new Pokémon added
-    savePokemonToLocalStorage(allPokemon)
   }
   renderPokemonList([pokemon])
 }
