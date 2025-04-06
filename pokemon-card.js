@@ -1,4 +1,3 @@
-// DOM Element
 let pokemonDetailCard
 
 /**
@@ -14,18 +13,12 @@ export function initPokemonDetailCard(detailCardElement) {
  * @param {Object} pokemon - Pokémon data
  * @param {string} description - Pokémon description
  * @param {string} spriteUrl - URL of Pokémon sprite
- * @param {string} formattedId - Formatted Pokémon ID
  */
-export function renderPokemonDetailCard(
-  pokemon,
-  description,
-  spriteUrl,
-  formattedId
-) {
+export function renderPokemonDetailCard(pokemon, description, spriteUrl) {
   pokemonDetailCard.innerHTML = `
     <div class="detail-header">
       <h2>${pokemon.name}</h2>
-      <span class="pokemon-id">#${formattedId}</span>
+      <span class="pokemon-id">#${pokemon.id.toString().padStart(3, "0")}</span>
     </div>
     <div class="detail-content">
       <div class="detail-image" title="Click to hear ${

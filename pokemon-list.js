@@ -173,7 +173,7 @@ function createPokemonListItem(pokemon) {
   const spriteUrl = pokemon.sprites.front_default
 
   // Format Pokémon ID with leading zeros
-  const formattedId = formatPokemonId(pokemon.id)
+  const formattedId = pokemon.id.toString().padStart(3, "0")
 
   // Create list item content
   listItem.innerHTML = `
@@ -190,15 +190,6 @@ function createPokemonListItem(pokemon) {
   )
 
   return listItem
-}
-
-/**
- * Format Pokémon ID with leading zeros
- * @param {number} id - Pokémon ID
- * @returns {string} - Formatted ID with leading zeros
- */
-export function formatPokemonId(id) {
-  return id.toString().padStart(3, "0")
 }
 
 /**
@@ -260,12 +251,10 @@ export function selectPokemonInList(pokemonId) {
  */
 export async function showPokemonDetail(pokemon) {
   try {
-    // Fetch additional species data
     const speciesData = await fetchPokemonSpecies(pokemon.species.url)
     const description = getPokemonDescription(speciesData)
     const spriteUrl = getBestPokemonSprite(pokemon)
-    const formattedId = formatPokemonId(pokemon.id)
-    renderPokemonDetailCard(pokemon, description, spriteUrl, formattedId)
+    renderPokemonDetailCard(pokemon, description, spriteUrl)
     setupPokemonCryPlayback(pokemon.name)
   } catch (error) {
     console.error(`Error showing details for ${pokemon.name}:`, error)
