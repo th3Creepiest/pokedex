@@ -1,13 +1,12 @@
 import { fetchPokemonList } from "./api.js"
 import { renderPokemonDetailCard } from "./pokemon-card.js"
 
-const POKEMON_COUNT = 50 // Number of Pokémon to load initially
+const POKEMON_COUNT = 15 // Number of Pokémon to load initially
 
 // Module state variables
 let pokemonListElement // DOM Element for the list container
 let allPokemon = [] // Stores all loaded Pokémon data
 let selectedPokemonId = null // Currently selected Pokémon ID
-let onPokemonSelectCallback = null // Callback function when a Pokemon is selected
 
 /**
  * Initialize the Pokemon list component
@@ -16,15 +15,9 @@ let onPokemonSelectCallback = null // Callback function when a Pokemon is select
 export async function initializePokemonList(listElement) {
   try {
     pokemonListElement = listElement
-    onPokemonSelectCallback = showPokemonDetail
     pokemonListElement.innerHTML = '<p class="loading">Loading Pokémon...</p>'
-
-    // Fetch initial Pokémon data
-    const pokemonData = await fetchPokemonList(POKEMON_COUNT)
-    allPokemon = pokemonData
-
-    // Render the list
-    renderPokemonList(pokemonData)
+    allPokemon = await fetchPokemonList(POKEMON_COUNT)
+    renderPokemonList(allPokemon)
   } catch (error) {
     console.error("Error initializing Pokemon list:", error)
     pokemonListElement.innerHTML = `<p class="error">Failed to load Pokémon. Please try again later.</p>`
@@ -140,13 +133,6 @@ function highlightSelectedPokemon() {
 }
 
 /**
- * Clear the Pokémon selection
- */
-export function clearPokemonSelection() {
-  selectedPokemonId = null
-}
-
-/**
  * Create a Pokémon list item element
  * @param {Object} pokemon - Pokémon data object
  * @returns {HTMLElement} - The created list item element
@@ -184,19 +170,12 @@ function createPokemonListItem(pokemon) {
  * @param {HTMLElement} listItem - The clicked list item element
  */
 function handlePokemonSelection(pokemon, listItem) {
-  // Clear previous selection and highlight the new one
   document.querySelectorAll(".pokemon-list-item").forEach((item) => {
     item.classList.remove("active")
   })
   listItem.classList.add("active")
-
-  // Update selected Pokémon ID
   selectedPokemonId = pokemon.id
-
-  // Call the callback function if provided
-  if (onPokemonSelectCallback) {
-    onPokemonSelectCallback(pokemon)
-  }
+  renderPokemonDetailCard(pokemon)
 }
 
 /**
@@ -213,32 +192,11 @@ export function processFetchedPokemon(pokemon) {
  * Select a Pokémon in the list by ID
  * @param {number} pokemonId - ID of the Pokémon to select
  */
-export function selectPokemonInList(pokemonId) {
+function selectPokemonInList(pokemonId) {
   const listItem = document.querySelector(
     `.pokemon-list-item[data-id="${pokemonId}"]`
   )
   if (listItem) {
     listItem.click()
   }
-}
-
-/**
- * Display detailed information about a Pokémon
- * @param {Object} pokemon - Pokémon data object
- */
-export function showPokemonDetail(pokemon) {
-  renderPokemonDetailCard(pokemon)
-}
-
-/**
- * Reset the detail view to empty state
- * @param {HTMLElement} detailCardElement - The detail card element to reset
- */
-export function resetDetailView(detailCardElement) {
-  detailCardElement.innerHTML = `
-    <div class="empty-state">
-      <p>Select a Pokémon to view details</p>
-    </div>
-  `
-  clearPokemonSelection()
 }
