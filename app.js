@@ -10,13 +10,11 @@ import { initPokemonDetailCard } from "./pokemon-card.js"
 
 const pokemonList = document.getElementById("pokemon-list")
 const pokemonDetailCard = document.getElementById("pokemon-detail-card")
-const searchInput = document.getElementById("search-input")
-const searchButton = document.getElementById("search-button")
 
 async function initApp() {
   try {
     initTheme()
-    initializeSearch(searchInput, searchButton)
+    initializeSearch()
     initPokemonDetailCard(pokemonDetailCard)
     await initializePokemonList(pokemonList)
   } catch (error) {

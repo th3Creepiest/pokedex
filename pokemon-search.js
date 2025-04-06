@@ -7,22 +7,13 @@ import {
 } from "./pokemon-list.js"
 import { fetchPokemonByNameOrId } from "./api.js"
 
-let searchInput
-let searchButton
+const searchInput = document.getElementById("search-input")
+const searchButton = document.getElementById("search-button")
 
-/**
- * Initialize the search functionality
- * @param {HTMLElement} inputElement - Search input element
- * @param {HTMLElement} buttonElement - Search button element
- */
-export function initializeSearch(inputElement, buttonElement) {
-  searchInput = inputElement
-  searchButton = buttonElement
-
+export function initializeSearch() {
   const handleSearch = async () => {
     const term = searchInput.value.trim()
     if (!term) return
-
     const localResults = filterLocalPokemon(term)
     if (localResults.length > 0) {
       renderPokemonList(localResults)
