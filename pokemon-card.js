@@ -1,15 +1,7 @@
 import { fetchPokemonSpecies } from "./api.js"
 import { setupPokemonCryPlayback } from "./pokemon-sound.js"
 
-let pokemonDetailCard
-
-/**
- * Initialize the Pokemon Detail Card
- * @param {HTMLElement} detailCardElement - The DOM element to render Pokemon details into
- */
-export function initPokemonDetailCard(detailCardElement) {
-  pokemonDetailCard = detailCardElement
-}
+const pokemonDetailCard = document.getElementById("pokemon-detail-card")
 
 /**
  * Render the Pokémon detail card with all information
