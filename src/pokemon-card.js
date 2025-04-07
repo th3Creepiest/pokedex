@@ -102,7 +102,7 @@ function renderHeader(pokemon) {
  */
 function renderImage(pokemon, spriteUrl) {
   return `
-    <div class="detail-image" title="Click to hear ${pokemon.name}'s cry" style="cursor: pointer; position: relative;">
+    <div class="detail-image" title="Click to hear ${pokemon.name}'s cry" >
       <img src="${spriteUrl}" alt="${pokemon.name}">
       <div class="sound-icon" style="position: absolute; bottom: 5px; right: 5px; font-size: 1.2rem;">🔊</div>
     </div>
